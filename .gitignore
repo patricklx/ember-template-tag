@@ -1,0 +1,7 @@
+*
+!package.json
+!tsconfig.json
+!*.ts
+!local-types
+!.npmignore
+!pnpm-lock.yaml
