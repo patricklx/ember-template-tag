@@ -34,7 +34,7 @@ describe("parseTemplates", function () {
   }
 
   it("<template><template>", function () {
-    const input = `<template minify>Hello!</template>`;
+    const input = `<template>Hello!</template>`;
 
     const templates = parseTemplates(input, "foo.gjs", {
       templateTag: "template",
