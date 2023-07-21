@@ -91,8 +91,8 @@ function minify(htmlContent: string) {
   const htmlParser = new htmlparser2.Parser({
     ontext(data: string) {
       replaceList.push({
-        start: htmlParser.startIndex,
-        end: htmlParser.endIndex + 1,
+        start: (htmlParser as any).startIndex,
+        end: (htmlParser as any).endIndex + 1,
         content: data.replace(/ {2,}/g, ' ').replace(/[\r\n\t\f\v]/g, ''),
       });
     },
@@ -178,6 +178,7 @@ export function parseTemplates(
   };
 
   class TemplateParser extends Parser {
+    isInsideTemplate = false;
     parseEmberTemplate(...args: any) {
       let openTemplates = 0;
       const contentRange = [0, 0] as [number, number];
@@ -187,6 +188,7 @@ export function parseTemplates(
           this.input.slice(this.state.pos).startsWith(templateTag)
       ) {
         const node = this.startNode() as EmberNode;
+        this.isInsideTemplate = true;
         node.tagName = templateTag;
         openTemplates += 1;
         node.startRange = [this.state.pos - 1, this.state.pos];
@@ -224,9 +226,10 @@ export function parseTemplates(
                 value = this.state.value;
               }
               node.endRange[1] = this.state.pos;
-              this.next();
               node.content = this.input.slice(...contentRange);
               node.contentRange = contentRange;
+              this.isInsideTemplate = false;
+              this.next();
               return this.finishNode(node, 'EmberTemplate');
             }
           }
@@ -234,6 +237,26 @@ export function parseTemplates(
         }
       }
       return null;
+    }
+
+    isAlphaNumeric(code: number) {
+      if (!(code > 47 && code < 58) && // numeric (0-9)
+          !(code > 64 && code < 91) && // upper alpha (A-Z)
+          !(code > 96 && code < 123)) { // lower alpha (a-z)
+        return false;
+      }
+      return true;
+    };
+
+    getTokenFromCode(code: number) {
+      if (this.isInsideTemplate) {
+        if (!this.isAlphaNumeric(code)) {
+          ++this.state.pos;
+          this.finishToken(code.toString(), String.fromCharCode(code));
+          return
+        }
+      }
+      return super.getTokenFromCode(code);
     }
 
     parseStatementLike(...args: any) {

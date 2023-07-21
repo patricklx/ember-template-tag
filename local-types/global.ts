@@ -21,14 +21,16 @@ declare module '@babel/parser/lib/parser' {
       pos: number;
     };
 
-    constructor(options: ParserOptions, input: string)
+    constructor(options: ParserOptions, input: string);
 
-    startNode(): Node
-    finishNode(node: Node, type: string): Node
+    startNode(): Node;
+    finishNode(node: Node, type: string): Node;
+    finishToken(type: string, value: string): void;
     next(): void;
     parse(): Program;
     parseStatementLike(...args: any): Node;
     parseMaybeAssign(...args: any): Node;
+    getTokenFromCode(code: number): void;
     parseClassMember(classBody: ClassBody, member: MemberExpression, state: any): Node;
   }
 }
