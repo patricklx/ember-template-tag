@@ -34,6 +34,9 @@ devDependencies:
   '@types/babel__traverse':
     specifier: ^7.20.1
     version: 7.20.1
+  '@types/domhandler':
+    specifier: ^2.4.2
+    version: 2.4.2
   '@types/htmlparser2':
     specifier: ^3.10.3
     version: 3.10.3
@@ -722,6 +725,10 @@ packages:
     resolution: {integrity: sha512-MitHFXnhtgwsGZWtT68URpOvLN4EREih1u3QtQiN4VdAxWKRVvGCSvw/Qth0M0Qq3pJpnGOu5JaM/ydK7OGbqg==}
     dependencies:
       '@babel/types': 7.22.5
+    dev: true
+
+  /@types/domhandler@2.4.2:
+    resolution: {integrity: sha512-T6Fx2wcgCMGYAgXsWuc73FJe10QiBdfb0T9abSAMNYYJfxZpVNVlLvwpCuY71OMA0IdZhxpEwjhJpOUVmIEgnQ==}
     dev: true
 
   /@types/domutils@1.7.4:

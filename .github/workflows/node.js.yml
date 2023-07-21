@@ -29,5 +29,5 @@ jobs:
       with:
           version: latest
     - run: pnpm i
-    - run: pnpm run build --if-present
+    - run: pnpm run build
     - run: pnpm test
