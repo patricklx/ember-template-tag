@@ -1,7 +1,14 @@
 import MagicString from 'magic-string';
 import path from 'path';
 import lineColumn from 'line-column';
-import { expect } from './debug';
+
+function expect<T>(value: T | null | undefined, message: string): T {
+  if (value === undefined || value === null) {
+    throw new Error(`LIBRARY BUG: ${message}`);
+  }
+
+  return value;
+}
 
 import {
   parseTemplates,

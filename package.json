@@ -1,9 +1,11 @@
 {
   "name": "ember-template-preprocessor",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "",
-  "main": "index.ts",
-  "scripts": {},
+  "main": "index.js",
+  "scripts": {
+    "prepublishOnly": "tsc"
+  },
   "keywords": [],
   "author": "Patrick Pircher",
   "license": "ISC",
@@ -11,10 +13,15 @@
     "@babel/parser": "^7.22.7",
     "@babel/traverse": "^7.22.8",
     "htmlparser2": "^9.0.0",
+    "line-column": "^1.0.2",
+    "magic-string": "^0.30.1",
     "parse-static-imports": "^1.1.0"
   },
   "devDependencies": {
     "@babel/types": "^7.22.5",
-    "@types/babel__traverse": "^7.20.1"
+    "@types/babel__traverse": "^7.20.1",
+    "@types/line-column": "^1.0.0",
+    "@types/node": "^20.4.2",
+    "typescript": "^5.1.6"
   }
 }
