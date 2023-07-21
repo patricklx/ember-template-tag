@@ -1,6 +1,6 @@
 import { preprocessEmbeddedTemplates } from '../preprocess-embedded-templates';
 import { getTemplateLocals } from '@glimmer/syntax';
-import * as util from '../../ember-template-imports/src/util';
+import * as util from '../util';
 
 describe('preprocessEmbeddedTemplates', function () {
   it('<template></template>', function () {
