@@ -207,7 +207,7 @@ export function parseTemplates(
         range: node.range!!,
         start: {
           index: node.range![0],
-          0: originalContent,
+          0: template.slice(...node.startRange),
         } as unknown as RegExpMatchArray,
         end: {
           index: node.endRange[0],
