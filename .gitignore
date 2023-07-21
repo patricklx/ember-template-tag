@@ -5,3 +5,5 @@
 !local-types
 !.npmignore
 !pnpm-lock.yaml
+!__tests__
+!*.js

@@ -1,8 +1,8 @@
 import parseStaticImports from 'parse-static-imports';
 import * as htmlparser2 from 'htmlparser2';
-import * as parser from '@babel/parser';
-import traverse from '@babel/traverse';
-import { Identifier } from '@babel/types';
+import Parser from '@babel/parser/lib/parser';
+import traverse, { NodePath } from '@babel/traverse';
+import { ClassBody, Identifier, MemberExpression, Node } from '@babel/types';
 import {
   TEMPLATE_TAG_NAME,
   TEMPLATE_LITERAL_MODULE_SPECIFIER,
@@ -38,7 +38,7 @@ export interface TemplateLiteralMatch {
 }
 
 export function isTemplateLiteralMatch(
-  template: TemplateTagMatch | TemplateLiteralMatch
+    template: TemplateTagMatch | TemplateLiteralMatch
 ): template is TemplateLiteralMatch {
   return template.type === 'template-literal';
 }
@@ -73,10 +73,10 @@ export interface ParseTemplatesOptions {
 }
 
 function replaceRange(
-  s: string,
-  start: number,
-  end: number,
-  substitute: string
+    s: string,
+    start: number,
+    end: number,
+    substitute: string
 ) {
   return s.substring(0, start) + substitute + s.substring(end);
 }
@@ -151,9 +151,9 @@ export const DEFAULT_PARSE_TEMPLATES_OPTIONS = {
  * @returns
  */
 export function parseTemplates(
-  template: string,
-  relativePath: string,
-  options: ParseTemplatesOptions = DEFAULT_PARSE_TEMPLATES_OPTIONS
+    template: string,
+    relativePath: string,
+    options: ParseTemplatesOptions = DEFAULT_PARSE_TEMPLATES_OPTIONS
 ): TemplateMatch[] {
   const results: TemplateMatch[] = [];
   const templateTag = options?.templateTag;
@@ -164,107 +164,120 @@ export function parseTemplates(
     importedNames = findImportedNames(template, templateLiteralConfig);
   }
 
-  if (templateTag) {
-    const stack: {
-      tagName: string;
-      attributes: Record<string, string>;
-      location: { start: number; end: number };
-    }[] = [];
-    const htmlParser = new htmlparser2.Parser({
-      onopentag(tagName: string, attributes: Record<string, string>) {
-        if (tagName === templateTag) {
-          stack.push({
-            tagName,
-            attributes,
-            location: {
-              start: htmlParser.startIndex,
-              end: htmlParser.endIndex + 1,
-            },
-          });
-          if (stack.length === 1) {
-            if (Object.keys(attributes).length !== 0) {
-              throw new Error(
-                `embedded template preprocessing currently does not support passing arguments, found args in: ${relativePath}`
-              );
+  type EmberNode = Node & {
+    tagName: string;
+    content: string;
+    startRange: [number, number];
+    endRange: [number, number];
+    contentRange: [number, number];
+  };
+
+  class TemplateParser extends Parser {
+    parseEmberTemplate(...args: any) {
+      let openTemplates = 0;
+      const contentRange = [0, 0] as [number, number];
+      if (
+          templateTag &&
+          this.state.value === '<' &&
+          this.input.slice(this.state.pos).startsWith(templateTag)
+      ) {
+        const node = this.startNode() as EmberNode;
+        node.tagName = templateTag;
+        openTemplates += 1;
+        node.startRange = [this.state.pos - 1, this.state.pos];
+        let value = this.state.value;
+        while (value !== '>') {
+          this.next();
+          value = this.state.value;
+        }
+        node.startRange[1] = this.state.pos;
+        contentRange[0] = this.state.pos;
+        while (openTemplates) {
+          if (
+              this.state.value === '<' &&
+              this.input.slice(this.state.pos).startsWith(templateTag)
+          ) {
+            openTemplates += 1;
+          }
+
+          if (
+              this.state.value === '<' &&
+              this.input.slice(this.state.pos).startsWith(`/${templateTag}>`)
+          ) {
+            node.endRange = [this.state.pos - 1, this.state.pos];
+            openTemplates -= 1;
+            if (openTemplates === 0) {
+              contentRange[1] = this.state.pos - 1;
+              value = this.state.value;
+              while (value !== '>') {
+                this.next();
+                value = this.state.value;
+              }
+              node.endRange[1] = this.state.pos;
+              this.next();
+              node.content = this.input.slice(...contentRange);
+              node.contentRange = contentRange;
+              return this.finishNode(node, 'EmberTemplate');
             }
           }
+          this.next();
         }
-      },
-      onclosetag(tagName: string) {
-        if (tagName === templateTag) {
-          if (stack.length === 1) {
-            const start = stack[0].location;
-            const location = {
-              start: htmlParser.startIndex,
-              end: htmlParser.endIndex + 1,
-            };
-            let content = template.slice(start.end, location.start);
-            const originalContent = content;
-            if (stack[0].attributes['minify']) {
-              content = minify(content);
-            }
-            if (stack[0].attributes['trim']) {
-              content = content.trim();
-            }
-            results.push({
-              type: 'template-tag',
-              tagName: templateTag,
-              contents: content,
-              startRange: start,
-              endRange: location,
-              start: {
-                index: start.start,
-                0: originalContent,
-              } as unknown as RegExpMatchArray,
-              end: {
-                index: location.start,
-                0: originalContent,
-              } as unknown as RegExpMatchArray,
-            });
-          }
-          stack.pop();
-        }
-      },
-    });
-    htmlParser.write(template);
-    htmlParser.end();
+      }
+      return null;
+    }
+
+    parseStatementLike(...args: any) {
+      return this.parseEmberTemplate() ?? super.parseStatementLike(...args);
+    }
+
+    parseMaybeAssign(...args: any) {
+      return this.parseEmberTemplate() ?? super.parseMaybeAssign(...args);
+    }
+
+    parseClassMember(classBody: ClassBody, member: MemberExpression, state:any) {
+      const node = this.parseEmberTemplate();
+      if (node) {
+        classBody.body.push(node as any);
+        return node;
+      }
+      return super.parseClassMember(classBody, member, state);
+    }
   }
-
-  let jsCode = template;
-  results.forEach((r) => {
-    const length = r.endRange.end - r.startRange.start - 4;
-    jsCode = replaceRange(
-      jsCode,
-      r.startRange.start,
-      r.endRange.end,
-      `['${' '.repeat(length)}']`
-    );
-  });
-
-  const ast = parser.parse(jsCode, {
-    ranges: true,
-    allowImportExportEverywhere: true,
-    errorRecovery: true,
-    plugins: ['typescript', 'decorators'],
-  });
-
-  const validTemplates = new Set();
+  const templateParser = new TemplateParser(
+      {
+        ranges: true,
+        allowImportExportEverywhere: true,
+        errorRecovery: true,
+        plugins: ['typescript', 'decorators'],
+      },
+      template
+  );
+  const ast = templateParser.parse();
 
   traverse(ast, {
-    StringLiteral(path) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    _verified: true,
+    EmberTemplate(path: NodePath<EmberNode>) {
       const node = path.node;
-      const t = results.find(
-        (t) =>
-          t.type === 'template-tag' &&
-          t.startRange.start === node.start! - 1 &&
-          t.endRange.end === node.end! + 1
-      );
-      if (t) {
-        if (path.parent.type === 'MemberExpression') {
-          t.prefix = ';';
-        }
-        validTemplates.add(t);
-      }
+      results.push({
+        type: 'template-tag',
+        tagName: node.tagName,
+        contents: node.content,
+        start: {
+          index: node.range![0],
+          0: node.content,
+        } as unknown as RegExpMatchArray,
+        end: {
+          index: node.endRange[0],
+          0: template.slice(...node.endRange),
+        } as unknown as RegExpMatchArray,
+        startRange: {
+          start: node.startRange[0],
+          end: node.startRange[1],
+        },
+        endRange: { start: node.endRange[0], end: node.endRange[1] },
+      });
     },
     TaggedTemplateExpression(path) {
       const node = path.node;
@@ -272,8 +285,8 @@ export function parseTemplates(
       const importConfig = importedNames.get(tagName);
       if (importConfig && node.quasi.quasis.length === 1) {
         const contents = template.slice(
-          node.quasi.quasis[0].start!,
-          node.quasi.quasis[0].end!
+            node.quasi.quasis[0].start!,
+            node.quasi.quasis[0].end!
         );
         results.push({
           type: 'template-literal',
@@ -285,7 +298,7 @@ export function parseTemplates(
           } as unknown as RegExpMatchArray,
           end: {
             index: node.range![1] - 1,
-            0: contents,
+            0: '`',
           } as unknown as RegExpMatchArray,
           startRange: {
             start: node.tag.range![0],
@@ -298,32 +311,25 @@ export function parseTemplates(
       }
     },
   });
-
-  results.slice().forEach((t) => {
-    if (t.type === 'template-tag' && !validTemplates.has(t)) {
-      const i = results.indexOf(t);
-      results.splice(i, 1);
-    }
-  });
   return results;
 }
 
 function findImportedNames(
-  template: string,
-  importConfig: StaticImportConfig[]
+    template: string,
+    importConfig: StaticImportConfig[]
 ): Map<string, StaticImportConfig> {
   const importedNames = new Map<string, StaticImportConfig>();
 
   for (const $import of parseStaticImports(template)) {
     for (const $config of findImportConfigByImportPath(
-      importConfig,
-      $import.moduleName
+        importConfig,
+        $import.moduleName
     )) {
       if ($import.defaultImport && $config.importIdentifier === 'default') {
         importedNames.set($import.defaultImport, $config);
       }
       const match = $import.namedImports.find(
-        ({ name }) => $config.importIdentifier === name
+          ({ name }) => $config.importIdentifier === name
       );
       if (match) {
         const localName = match.alias || match.name;
@@ -336,8 +342,8 @@ function findImportedNames(
 }
 
 function findImportConfigByImportPath(
-  importConfig: StaticImportConfig[],
-  importPath: string
+    importConfig: StaticImportConfig[],
+    importPath: string
 ): StaticImportConfig[] {
   return importConfig.filter((config) => config.importPath === importPath);
 }
