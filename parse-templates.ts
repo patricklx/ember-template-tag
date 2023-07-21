@@ -21,6 +21,8 @@ export interface TemplateTagMatch {
   start: RegExpMatchArray;
   end: RegExpMatchArray;
   contents: string;
+  contentRange: [number, number];
+  range: [number, number];
   prefix?: string;
 }
 
@@ -32,6 +34,8 @@ export interface TemplateLiteralMatch {
   endRange: Match;
   start: RegExpMatchArray;
   end: RegExpMatchArray;
+  contentRange: [number, number];
+  range: [number, number];
   importPath: string;
   importIdentifier: string;
   prefix?: string;
@@ -167,6 +171,7 @@ export function parseTemplates(
   type EmberNode = Node & {
     tagName: string;
     content: string;
+    tagProperties: Record<string, string|undefined>;
     startRange: [number, number];
     endRange: [number, number];
     contentRange: [number, number];
@@ -190,6 +195,11 @@ export function parseTemplates(
           this.next();
           value = this.state.value;
         }
+        const properties = template.slice(node.startRange[0], this.state.pos - 1).split(' ').slice(1).filter(x => !!x).map(p => p.split('='));
+        node.tagProperties = {};
+        properties.forEach((p) => {
+          node.tagProperties[p[0]] = p.slice(1).length ? p.slice(1).join('=') : undefined
+        });
         node.startRange[1] = this.state.pos;
         contentRange[0] = this.state.pos;
         while (openTemplates) {
@@ -260,13 +270,26 @@ export function parseTemplates(
     _verified: true,
     EmberTemplate(path: NodePath<EmberNode>) {
       const node = path.node;
+
+      const originalContent = node.content;
+      let content = originalContent;
+      if ('trim' in node.tagProperties) {
+        content = content.trim();
+      }
+
+      if ('minify' in node.tagProperties) {
+        content = minify(content);
+      }
+
       results.push({
         type: 'template-tag',
         tagName: node.tagName,
-        contents: node.content,
+        contents: content,
+        contentRange: node.contentRange,
+        range: node.range!!,
         start: {
           index: node.range![0],
-          0: node.content,
+          0: originalContent,
         } as unknown as RegExpMatchArray,
         end: {
           index: node.endRange[0],
@@ -305,6 +328,8 @@ export function parseTemplates(
             end: node.tag.range![1] + 1,
           },
           endRange: { start: node.range![1] - 1, end: node.range![1] },
+          range: node.range!,
+          contentRange: [node.tag.range![1], node.range![1] - 1],
           importPath: importConfig.importPath,
           importIdentifier: importConfig.importIdentifier,
         });

@@ -43,6 +43,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            10,
+            16,
+          ],
           "contents": "Hello!",
           "end": {
             "0": "</template>",
@@ -52,6 +56,10 @@ describe("parseTemplates", function () {
             "end": 27,
             "start": 16,
           },
+          "range": [
+            0,
+            27,
+          ],
           "start": {
             "0": "Hello!",
             "index": 0,
@@ -79,6 +87,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            29,
+            35,
+          ],
           "contents": "Hello!",
           "end": {
             "0": "</template>",
@@ -88,6 +100,10 @@ describe("parseTemplates", function () {
             "end": 46,
             "start": 35,
           },
+          "range": [
+            19,
+            46,
+          ],
           "start": {
             "0": "Hello!",
             "index": 19,
@@ -117,6 +133,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            35,
+            41,
+          ],
           "contents": "Hello!",
           "end": {
             "0": "</template>",
@@ -126,6 +146,10 @@ describe("parseTemplates", function () {
             "end": 52,
             "start": 41,
           },
+          "range": [
+            25,
+            52,
+          ],
           "start": {
             "0": "Hello!",
             "index": 25,
@@ -154,6 +178,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            51,
+            57,
+          ],
           "contents": "Hello!",
           "end": {
             "0": "</template>",
@@ -163,6 +191,10 @@ describe("parseTemplates", function () {
             "end": 68,
             "start": 57,
           },
+          "range": [
+            41,
+            68,
+          ],
           "start": {
             "0": "Hello!",
             "index": 41,
@@ -191,6 +223,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            53,
+            59,
+          ],
           "contents": "Hello!",
           "end": {
             "0": "</template>",
@@ -200,6 +236,10 @@ describe("parseTemplates", function () {
             "end": 70,
             "start": 59,
           },
+          "range": [
+            43,
+            70,
+          ],
           "start": {
             "0": "Hello!",
             "index": 43,
@@ -241,6 +281,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            45,
+            52,
+          ],
           "contents": "Hello!",
           "end": {
             "0": "\`",
@@ -252,6 +296,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "hbs",
           "importPath": "ember-cli-htmlbars",
+          "range": [
+            42,
+            53,
+          ],
           "start": {
             "0": "Hello!",
             "index": 42,
@@ -288,6 +336,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            54,
+            61,
+          ],
           "contents": "Hello!",
           "end": {
             "0": "\`",
@@ -299,6 +351,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "hbs",
           "importPath": "@ember/template-compilation",
+          "range": [
+            51,
+            62,
+          ],
           "start": {
             "0": "Hello!",
             "index": 51,
@@ -330,6 +386,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            49,
+            56,
+          ],
           "contents": "Hello!",
           "end": {
             "0": "\`",
@@ -341,6 +401,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "hbs",
           "importPath": "ember-template-imports",
+          "range": [
+            46,
+            57,
+          ],
           "start": {
             "0": "Hello!",
             "index": 46,
@@ -373,6 +437,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            65,
+            72,
+          ],
           "contents": "Hello!",
           "end": {
             "0": "\`",
@@ -384,6 +452,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "default",
           "importPath": "ember-cli-htmlbars-inline-precompile",
+          "range": [
+            59,
+            73,
+          ],
           "start": {
             "0": "Hello!",
             "index": 59,
@@ -415,6 +487,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            49,
+            56,
+          ],
           "contents": "Hello!",
           "end": {
             "0": "\`",
@@ -426,6 +502,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "default",
           "importPath": "htmlbars-inline-precompile",
+          "range": [
+            46,
+            57,
+          ],
           "start": {
             "0": "Hello!",
             "index": 46,
@@ -462,6 +542,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            84,
+            91,
+          ],
           "contents": "Hello!",
           "end": {
             "0": "\`",
@@ -473,6 +557,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "precompileTemplate",
           "importPath": "@ember/template-compilation",
+          "range": [
+            66,
+            92,
+          ],
           "start": {
             "0": "Hello!",
             "index": 66,
@@ -514,6 +602,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            165,
+            172,
+          ],
           "contents": "Howdy!",
           "end": {
             "0": "\`",
@@ -525,6 +617,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "hbs",
           "importPath": "ember-cli-htmlbars",
+          "range": [
+            158,
+            173,
+          ],
           "start": {
             "0": "Howdy!",
             "index": 158,
@@ -537,6 +633,10 @@ describe("parseTemplates", function () {
           "type": "template-literal",
         },
         {
+          "contentRange": [
+            180,
+            184,
+          ],
           "contents": "Hi!",
           "end": {
             "0": "\`",
@@ -548,6 +648,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "default",
           "importPath": "htmlbars-inline-precompile",
+          "range": [
+            174,
+            185,
+          ],
           "start": {
             "0": "Hi!",
             "index": 174,
@@ -594,6 +698,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            188,
+            195,
+          ],
           "contents": "Hello!",
           "end": {
             "0": "\`",
@@ -605,6 +713,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "default",
           "importPath": "ember-cli-htmlbars",
+          "range": [
+            174,
+            196,
+          ],
           "start": {
             "0": "Hello!",
             "index": 174,
@@ -617,6 +729,10 @@ describe("parseTemplates", function () {
           "type": "template-literal",
         },
         {
+          "contentRange": [
+            204,
+            211,
+          ],
           "contents": "Howdy!",
           "end": {
             "0": "\`",
@@ -628,6 +744,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "hbs",
           "importPath": "ember-cli-htmlbars",
+          "range": [
+            197,
+            212,
+          ],
           "start": {
             "0": "Howdy!",
             "index": 197,
@@ -640,6 +760,10 @@ describe("parseTemplates", function () {
           "type": "template-literal",
         },
         {
+          "contentRange": [
+            219,
+            223,
+          ],
           "contents": "Hi!",
           "end": {
             "0": "\`",
@@ -651,6 +775,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "default",
           "importPath": "htmlbars-inline-precompile",
+          "range": [
+            213,
+            224,
+          ],
           "start": {
             "0": "Hi!",
             "index": 213,
@@ -685,6 +813,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            204,
+            211,
+          ],
           "contents": "Howdy!",
           "end": {
             "0": "\`",
@@ -696,6 +828,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "hbs",
           "importPath": "ember-cli-htmlbars",
+          "range": [
+            197,
+            212,
+          ],
           "start": {
             "0": "Howdy!",
             "index": 197,
@@ -708,6 +844,10 @@ describe("parseTemplates", function () {
           "type": "template-literal",
         },
         {
+          "contentRange": [
+            219,
+            223,
+          ],
           "contents": "Hi!",
           "end": {
             "0": "\`",
@@ -719,6 +859,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "default",
           "importPath": "htmlbars-inline-precompile",
+          "range": [
+            213,
+            224,
+          ],
           "start": {
             "0": "Hi!",
             "index": 213,
@@ -754,6 +898,10 @@ describe("parseTemplates", function () {
     expect(templates).toMatchInlineSnapshot(`
       [
         {
+          "contentRange": [
+            116,
+            123,
+          ],
           "contents": "Howdy!",
           "end": {
             "0": "\`",
@@ -765,6 +913,10 @@ describe("parseTemplates", function () {
           },
           "importIdentifier": "hbs",
           "importPath": "ember-cli-htmlbars",
+          "range": [
+            109,
+            124,
+          ],
           "start": {
             "0": "Howdy!",
             "index": 109,
