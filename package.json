@@ -12,7 +12,7 @@
   "author": "Patrick Pircher",
   "license": "ISC",
   "dependencies": {
-    "@babel/parser": "^7.22.7",
+    "@babel/parser": "7.22.7",
     "@babel/traverse": "^7.22.8",
     "htmlparser2": "^9.0.0",
     "line-column": "^1.0.2",
