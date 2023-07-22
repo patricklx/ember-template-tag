@@ -19,8 +19,6 @@ export interface TemplateTagMatch {
   tagName: string;
   startRange: Match;
   endRange: Match;
-  start: RegExpMatchArray;
-  end: RegExpMatchArray;
   contents: string;
   contentRange: [number, number];
   range: [number, number];
@@ -33,8 +31,6 @@ export interface TemplateLiteralMatch {
   contents: string;
   startRange: Match;
   endRange: Match;
-  start: RegExpMatchArray;
-  end: RegExpMatchArray;
   contentRange: [number, number];
   range: [number, number];
   importPath: string;
@@ -205,14 +201,6 @@ export function parseTemplates(
         contents: content,
         contentRange: node.contentRange,
         range: node.range!!,
-        start: {
-          index: node.range![0],
-          0: template.slice(...node.startRange),
-        } as unknown as RegExpMatchArray,
-        end: {
-          index: node.endRange[0],
-          0: template.slice(...node.endRange),
-        } as unknown as RegExpMatchArray,
         startRange: {
           start: node.startRange[0],
           end: node.startRange[1],
@@ -233,14 +221,6 @@ export function parseTemplates(
           type: 'template-literal',
           tagName,
           contents,
-          start: {
-            index: node.tag.range![0],
-            0: contents,
-          } as unknown as RegExpMatchArray,
-          end: {
-            index: node.range![1] - 1,
-            0: '`',
-          } as unknown as RegExpMatchArray,
           startRange: {
             start: node.tag.range![0],
             end: node.tag.range![1] + 1,
