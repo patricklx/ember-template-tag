@@ -11,7 +11,7 @@
     "strict": true
   },
   "include": [
-    "*.ts",
+    "lib/*.ts",
     "local-types/*.ts"
   ],
 }
