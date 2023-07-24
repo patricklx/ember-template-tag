@@ -32,4 +32,6 @@ jobs:
     - run: pnpm run build
     - run: pnpm test
     - run: pnpm publish
+      env: 
+        NPM_TOKEN: "${{ secrets.NPM_TOKEN }}"
     
