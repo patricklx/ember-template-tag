@@ -30,7 +30,7 @@ jobs:
           version: latest
     - run: pnpm i
     - run: pnpm run build
-    - run: pnpm test
+    - run: pnpm test && pnpm tsc --build --clean
     - run: pnpm publish
       env: 
         NPM_TOKEN: "${{ secrets.NPM_TOKEN }}"
