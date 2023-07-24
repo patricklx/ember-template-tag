@@ -1,134 +1,169 @@
-import { preprocessEmbeddedTemplates } from '../preprocess-embedded-templates';
-import { getTemplateLocals } from '@glimmer/syntax';
-import * as util from '../util';
+import { transform } from "../lib/transform-embedded-templates";
+import { getTemplateLocals } from "@glimmer/syntax";
+import * as util from "../lib/util";
 
-describe('preprocessEmbeddedTemplates', function () {
-  it('<template></template>', function () {
+describe("transform", function () {
+  it("<template></template>", function () {
     const input = `<template>Hello!</template>`;
-    const templates = preprocessEmbeddedTemplates(input, {
+    const templates = transform({
+      content: input,
       getTemplateLocals,
-      relativePath: 'foo.gjs',
+      relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      templateTagReplacement: util.TEMPLATE_TAG_PLACEHOLDER,
       includeSourceMaps: false,
       includeTemplateTokens: false,
     });
 
-    const expected = {
-      output: '[__GLIMMER_TEMPLATE(`Hello!`, { strictMode: true })]',
-      replacements: [
-        {
-          type: 'start',
-          index: 0,
-          oldLength: 10,
-          newLength: 27,
-          originalCol: 1,
-          originalLine: 1,
-        },
-        {
-          type: 'end',
-          index: 16,
-          oldLength: 11,
-          newLength: 25,
-          originalCol: 17,
-          originalLine: 1,
-        },
-      ],
-    };
-
-    expect(templates).toEqual(expected);
+    expect(templates).toMatchInlineSnapshot(`
+      {
+        "output": "import { template } from "@ember/template-compiler";
+      export default template("Hello!", {
+        moduleName: "foo.gjs",
+        scope: instance => {
+          return {};
+        }
+      });",
+      }
+    `);
   });
 
-  it('<template></template> with backticks in content', function () {
-    const input = '<template>Hello `world`!</template>';
-    const templates = preprocessEmbeddedTemplates(input, {
+  it("<template></template> with backticks in content", function () {
+    const input = "<template>Hello `world`!</template>";
+    const templates = transform({
+      content: input,
       getTemplateLocals,
-      relativePath: 'foo.gjs',
+      relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      templateTagReplacement: util.TEMPLATE_TAG_PLACEHOLDER,
       includeSourceMaps: false,
       includeTemplateTokens: false,
     });
 
-    const expected = {
-      output:
-        '[__GLIMMER_TEMPLATE(`Hello \\`world\\`!`, { strictMode: true })]',
-      replacements: [
-        {
-          type: 'start',
-          index: 0,
-          oldLength: 10,
-          newLength: 37,
-          originalCol: 1,
-          originalLine: 1,
-        },
-        {
-          type: 'end',
-          index: 24,
-          oldLength: 11,
-          newLength: 25,
-          originalCol: 25,
-          originalLine: 1,
-        },
-      ],
-    };
-
-    expect(templates).toEqual(expected);
+    expect(templates).toMatchInlineSnapshot(`
+      {
+        "output": "import { template } from "@ember/template-compiler";
+      export default template("Hello \`world\`!", {
+        moduleName: "foo.gjs",
+        scope: instance => {
+          return {};
+        }
+      });",
+      }
+    `);
   });
 
-  it('hbs`Hello`', function () {
+  it("<template></template> in class", function () {
+    const input =
+      "class X {message: string; <template>Hello {{this.message}}!</template>}";
+    const templates = transform({
+      content: input,
+      getTemplateLocals,
+      relativePath: "foo.gjs",
+      templateTag: util.TEMPLATE_TAG_NAME,
+      includeSourceMaps: false,
+      includeTemplateTokens: false,
+    });
+
+    expect(templates).toMatchInlineSnapshot(`
+      {
+        "output": "import { template } from "@ember/template-compiler";
+      class X {
+        message: string;
+        static {
+          {
+            template("Hello {{this.message}}!", {
+              component: this,
+              moduleName: "foo.gjs",
+              scope: instance => {
+                return {};
+              }
+            });
+          }
+        }
+      }",
+      }
+    `);
+  });
+
+  it("<template></template> in class with binding", function () {
+    const input =
+      "const message:string; class X {<template>Hello {{message.x}}!</template>}";
+    const templates = transform({
+      content: input,
+      getTemplateLocals,
+      relativePath: "foo.gjs",
+      templateTag: util.TEMPLATE_TAG_NAME,
+      includeSourceMaps: false,
+      includeTemplateTokens: false,
+    });
+
+    expect(templates).toMatchInlineSnapshot(`
+      {
+        "output": "import { template } from "@ember/template-compiler";
+      const message: string;
+      class X {
+        static {
+          {
+            template("Hello {{message.x}}!", {
+              component: this,
+              moduleName: "foo.gjs",
+              scope: instance => {
+                return {
+                  message
+                };
+              }
+            });
+          }
+        }
+      }",
+      }
+    `);
+  });
+
+  it("hbs`Hello`", function () {
     const input = `hbs\`Hello!\``;
-    const templates = preprocessEmbeddedTemplates(input, {
+    const templates = transform({
+      content: input,
       getTemplateLocals,
-      relativePath: 'foo.gjs',
+      relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      templateTagReplacement: util.TEMPLATE_TAG_PLACEHOLDER,
-      importIdentifier: util.TEMPLATE_LITERAL_IDENTIFIER,
-      importPath: util.TEMPLATE_LITERAL_MODULE_SPECIFIER,
       includeSourceMaps: false,
       includeTemplateTokens: false,
     });
 
-    const expected = {
-      output: input,
-      replacements: [],
-    };
-
-    expect(templates).toEqual(expected);
+    expect(templates).toMatchInlineSnapshot(`
+      {
+        "output": "hbs\`Hello!\`",
+      }
+    `);
   });
 
-  it('hbs`Hello \\`world\\``', function () {
+  it("hbs`Hello \\`world\\``", function () {
     const input = `hbs\`Hello \\\`world\\\`!\``; // template tag with escaped backticks in content
-    const templates = preprocessEmbeddedTemplates(input, {
+    const templates = transform({
+      content: input,
       getTemplateLocals,
-      relativePath: 'foo.gjs',
+      relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      templateTagReplacement: util.TEMPLATE_TAG_PLACEHOLDER,
-      importIdentifier: util.TEMPLATE_LITERAL_IDENTIFIER,
-      importPath: util.TEMPLATE_LITERAL_MODULE_SPECIFIER,
       includeSourceMaps: false,
       includeTemplateTokens: false,
     });
 
-    const expected = {
-      output: input,
-      replacements: [],
-    };
-
-    expect(templates).toEqual(expected);
+    expect(templates).toMatchInlineSnapshot(`
+      {
+        "output": "hbs\`Hello \\\`world\\\`!\`",
+      }
+    `);
   });
 
-  it('hbs`Hello` with import statement', function () {
+  it("hbs`Hello` with import statement", function () {
     const input =
       `import { hbs } from 'ember-template-imports'\n` +
-      'const Greeting = hbs`Hello!`\n';
-    const templates = preprocessEmbeddedTemplates(input, {
+      "const Greeting = hbs`Hello!`\n";
+    const templates = transform({
+      content: input,
       getTemplateLocals,
-      relativePath: 'foo.gjs',
+      relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      templateTagReplacement: util.TEMPLATE_TAG_PLACEHOLDER,
-      importIdentifier: util.TEMPLATE_LITERAL_IDENTIFIER,
-      importPath: util.TEMPLATE_LITERAL_MODULE_SPECIFIER,
       includeSourceMaps: false,
       includeTemplateTokens: false,
     });
@@ -138,7 +173,7 @@ describe('preprocessEmbeddedTemplates', function () {
         "import { hbs } from 'ember-template-imports'\nconst Greeting = hbs(`Hello!`, { strictMode: true })\n",
       replacements: [
         {
-          type: 'start',
+          type: "start",
           index: 62,
           oldLength: 4,
           newLength: 11,
@@ -146,7 +181,7 @@ describe('preprocessEmbeddedTemplates', function () {
           originalLine: 2,
         },
         {
-          type: 'end',
+          type: "end",
           index: 72,
           oldLength: 1,
           newLength: 24,
@@ -156,33 +191,39 @@ describe('preprocessEmbeddedTemplates', function () {
       ],
     };
 
-    expect(templates).toEqual(expected);
+    expect(templates).toMatchInlineSnapshot(`
+      {
+        "output": "import { hbs } from 'ember-template-imports'
+      const Greeting = hbs\`Hello!\`
+      ",
+      }
+    `);
   });
 
-  it('includes source maps', function () {
+  it("includes source maps", function () {
     const input = `<template>Hello!</template>`;
-    const templates = preprocessEmbeddedTemplates(input, {
+    const templates = transform({
+      content: input,
       getTemplateLocals,
-      relativePath: 'foo.gjs',
+      relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      templateTagReplacement: util.TEMPLATE_TAG_PLACEHOLDER,
       includeSourceMaps: true,
       includeTemplateTokens: false,
     });
 
-    expect(templates.output).toContain('//# sourceMappingURL');
+    expect(templates.output).toContain("//# sourceMappingURL");
   });
   it("doesn't include source maps if no templates", function () {
     const input = `const foo = "Hello!"`;
-    const templates = preprocessEmbeddedTemplates(input, {
+    const templates = transform({
+      content: input,
       getTemplateLocals,
-      relativePath: 'foo.gjs',
+      relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      templateTagReplacement: util.TEMPLATE_TAG_PLACEHOLDER,
       includeSourceMaps: true,
       includeTemplateTokens: false,
     });
 
-    expect(templates.output).not.toContain('//# sourceMappingURL');
+    expect(templates.output).not.toContain("//# sourceMappingURL");
   });
 });

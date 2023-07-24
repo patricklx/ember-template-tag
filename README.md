@@ -1,9 +1,9 @@
 # ember-template-preprocessor
 
-instead of using ember-template-imports to find & parse templates, this can be used.
+instead of using ember-template-imports to find, parse & transform templates, this can be used.
 
 ```js
-const { parseTemplates, preprocessEmbeddedTemplates } = require('ember-template-preprocessor');
+const { parseTemplates, preprocessEmbeddedTemplates, transform } = require('ember-template-preprocessor');
 const { TEMPLATE_TAG_NAME, TEMPLATE_LITERAL_IDENTIFIER, TEMPLATE_LITERAL_MODULE_SPECIFIER } = require('ember-template-preprocessor');
 ```
 
@@ -14,34 +14,34 @@ the output of parseTemplates is
 
 ```js
 [
-        {
-          "contentRange": [
+    {
+        "contentRange": [
             10,
             16,
-          ],
-          "contents": "Hello!",
-          "end": {
-            "0": "</template>",
-            "index": 16,
-          },
-          "endRange": {
+        ],
+        "contents": "Hello!",
+        "endRange": {
             "end": 27,
             "start": 16,
-          },
-          "range": [
+        },
+        "range": [
             0,
             27,
-          ],
-          "start": {
-            "0": "Hello!",
-            "index": 0,
-          },
-          "startRange": {
+        ],
+        "startRange": {
             "end": 10,
             "start": 0,
-          },
-          "tagName": "template",
-          "type": "template-tag",
         },
-      ]
+        "tagName": "template",
+        "type": "template-tag",
+    },
+]
+```
+
+
+## to transform
+
+```js
+const { transform } = require('ember-template-preprocessor');
+const transformed = transform('...')
 ```

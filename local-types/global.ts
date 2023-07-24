@@ -34,3 +34,8 @@ declare module '@babel/parser/lib/parser' {
     parseClassMember(classBody: ClassBody, member: MemberExpression, state: any): Node;
   }
 }
+
+declare module '@babel/parser/lib/plugin-utils' {
+  export const mixinPlugins: Record<string, Function>;
+  export const mixinPluginNames: string[];
+}

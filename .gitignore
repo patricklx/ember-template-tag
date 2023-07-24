@@ -1,7 +1,8 @@
 *
 !package.json
 !tsconfig.json
-!*.ts
+!lib
+!lib/*
 !local-types
 !.npmignore
 !pnpm-lock.yaml

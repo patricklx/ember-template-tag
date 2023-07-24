@@ -1,5 +1,4 @@
 *
 !package.json
-!*.js
-!*.d.ts
-jest.config.js
+!lib/*.js
+!lib/*.d.ts
