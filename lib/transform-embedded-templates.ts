@@ -169,5 +169,5 @@ export function transform(options: PreprocessOptions) {
             plugins
         }
     });
-    return { output: result?.code, map: result?.map, ast: result?.ast }
+    return { output: result?.code, map: result?.map, ast: result?.ast, detectedTemplateNodes: ast?.extra?.detectedTemplateNodes }
 }
