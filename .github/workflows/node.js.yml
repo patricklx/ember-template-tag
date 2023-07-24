@@ -31,3 +31,5 @@ jobs:
     - run: pnpm i
     - run: pnpm run build
     - run: pnpm test
+    - run: pnpm publish
+    
