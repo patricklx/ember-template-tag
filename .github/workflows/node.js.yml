@@ -32,6 +32,7 @@ jobs:
     - run: pnpm run build
     - run: pnpm test && pnpm tsc --build --clean
     - run: pnpm publish
+      if: github.ref == 'refs/heads/main'
       env: 
         NPM_TOKEN: "${{ secrets.NPM_TOKEN }}"
     
