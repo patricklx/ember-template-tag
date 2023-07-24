@@ -100,11 +100,13 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
                 if (path.parent?.type === 'ClassBody') {
                     const node = path.parent as b.ClassBody
                     const templateExpr = buildTemplateCall(path, options);
+                    (templateExpr as any).orginalNode = path.node;
                     let staticBlock = node.body.find(m => m.type === 'StaticBlock') as b.StaticBlock | null;
                     if (!staticBlock) {
                         staticBlock = b.staticBlock([])
                         node.body.push(staticBlock);
                     }
+                    (templateExpr as any).orginalNode = path.node;
                     staticBlock.body.push(b.blockStatement([b.expressionStatement(templateExpr)]));
                     path.remove();
                 } else {
@@ -127,7 +129,7 @@ type PreprocessOptions = {
     templateTag: string;
     relativePath: string;
     babelPlugins?: ParserPlugin[];
-    includeSourceMaps?: boolean;
+    includeSourceMaps?: boolean | 'inline';
     includeTemplateTokens?: boolean;
     getTemplateLocals?: (html: string, options?: any) => string[]
 }
@@ -138,6 +140,7 @@ export function transform(options: PreprocessOptions) {
     let ast = options.ast;
     if (options.content) {
         ast = parse(options.content, {
+            ranges: true,
             templateTag: options.templateTag || DEFAULT_PARSE_TEMPLATES_OPTIONS.templateTag,
             plugins: plugins,
             allowImportExportEverywhere: true,
@@ -158,11 +161,13 @@ export function transform(options: PreprocessOptions) {
     }
 
     const result = transformFromAstSync(ast!, options.content, {
-        sourceMaps: options.includeSourceMaps ? "inline" : false,
+        cloneInputAst: false,
+        sourceMaps: options.includeSourceMaps,
         plugins: ([[TemplateTransformPlugins, pluginOptions]] as any[]),
         parserOpts: {
+            ranges: true,
             plugins
         }
     });
-    return { output: result?.code }
+    return { output: result?.code, map: result?.map, ast: result?.ast }
 }
