@@ -1,7 +1,4 @@
-import parseStaticImports from 'parse-static-imports';
 import traverse, { NodePath } from '@babel/traverse';
-
-import { Identifier } from '@babel/types';
 import { TEMPLATE_TAG_NAME, } from './util';
 import parse, { EmberNode } from './template-parser';
 import * as b from '@babel/types';
@@ -69,18 +66,11 @@ export interface ParseTemplatesOptions {
   templateLiteral?: StaticImportConfig[];
 }
 
-function replaceRange(
-    s: string,
-    start: number,
-    end: number,
-    substitute: string
-) {
-  return s.substring(0, start) + substitute + s.substring(end);
-}
-
 export const DEFAULT_PARSE_TEMPLATES_OPTIONS = {
   templateTag: TEMPLATE_TAG_NAME
 };
+
+b.TYPES.push('EmberTemplate');
 
 /**
  * Parses a template to find all possible valid matches for an embedded template.
@@ -119,8 +109,15 @@ export function parseTemplates(
       }
   );
 
-  b.TYPES.push('EmberTemplate');
+  return parseTemplatesFromAst(ast, relativePath, options);
+}
 
+export function parseTemplatesFromAst(
+    ast: b.Node,
+    relativePath: string,
+    options: ParseTemplatesOptions = DEFAULT_PARSE_TEMPLATES_OPTIONS
+) {
+  const results: TemplateMatch[] = [];
 
   traverse(ast, {
     // @ts-ignore
@@ -141,5 +138,5 @@ export function parseTemplates(
       });
     }
   });
-  return { results, ast };
+  return results;
 }
