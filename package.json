@@ -15,6 +15,9 @@
   "publishConfig": {
     "registry": "https://registry.npmjs.org"
   },
+  "repository": {
+    "url": "https://github.com/patricklx/ember-template-tag"
+  },
   "dependencies": {
     "@babel/core": "^7.22.9",
     "@babel/parser": "^7.22.7",
