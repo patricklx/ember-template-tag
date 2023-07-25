@@ -80,14 +80,20 @@ function buildTemplateCall(identifier: string,path: NodePath<EmberNode>, options
 }
 
 function ensureImport(path: NodePath<EmberNode>) {
-    const imp = b.importDeclaration([b.importSpecifier(b.identifier('template'), b.identifier('template'))], b.stringLiteral('@ember/template-compiler'))
+    let templateCallSpecifier = 'template';
+    let counter = 1;
+    while (templateCallSpecifier in path.scope.references) {
+        templateCallSpecifier = 'template' + counter;
+        counter++;
+    }
+    const imp = b.importDeclaration([b.importSpecifier(b.identifier(templateCallSpecifier), b.identifier('template'))], b.stringLiteral('@ember/template-compiler'))
     if (!path.state.addedImport) {
         path.state.addedImport = true;
         (path.state.program as NodePath<b.Program>).node.body.splice(0, 0, imp);
         path.state.progra = (path.state.program as NodePath<b.Program>).replaceWith(path.state.program);
     }
     if (!path.state.templateCallSpecifier) {
-        path.state.templateCallSpecifier = 'template';
+        path.state.templateCallSpecifier = templateCallSpecifier;
     }
     return path.state.templateCallSpecifier;
 }
@@ -107,18 +113,13 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
                     const node = path.parent as b.ClassBody
                     const templateExpr = buildTemplateCall(specifier, path, options);
                     templateExpr.loc = path.node.loc;
-                    (templateExpr as any).orginalNode = path.node;
                     let staticBlock = node.body.find(m => m.type === 'StaticBlock') as b.StaticBlock | null;
-                    if (staticBlock) {
-                        node.body.splice(node.body.indexOf(staticBlock), 1);
-                    }
                     if (!staticBlock) {
                         staticBlock = b.staticBlock([]);
+                        node.body.push(staticBlock);
                     }
-                    (templateExpr as any).orginalNode = path.node;
                     staticBlock.body.push(b.blockStatement([b.expressionStatement(templateExpr)]));
-                    path.replaceWith(staticBlock);
-                    path.parentPath?.replaceWithMultiple(node.body);
+                    path.remove();
                 } else {
                     const templateExpr = buildTemplateCall(specifier, path, options);
                     templateExpr.loc = path.node.loc;
@@ -139,9 +140,9 @@ type PreprocessOptions = {
     content: string;
     templateTag: string;
     relativePath: string;
+    explicitMode?: boolean;
     babelPlugins?: ParserPlugin[];
-    includeSourceMaps?: boolean | 'inline';
-    includeTemplateTokens?: boolean;
+    includeSourceMaps?: boolean | 'inline' | 'both';
     getTemplateLocals?: (html: string, options?: any) => string[]
 }
 
@@ -166,20 +167,15 @@ export function transform(options: PreprocessOptions) {
     }
 
     const pluginOptions: TransformOptions = {
-        explicit: true,
+        explicit: options.explicitMode ?? true,
         getTemplateLocals: options.getTemplateLocals || getTemplateLocals,
         moduleName: options.relativePath || ''
     }
 
     const result = transformFromAstSync(ast!, options.content, {
         cloneInputAst: false,
-        ast: true,
-        sourceMaps: true,
-        plugins: ([[TemplateTransformPlugins, pluginOptions]] as any[]),
-        parserOpts: {
-            ranges: true,
-            plugins
-        }
+        sourceMaps: options.includeSourceMaps === true ? 'both' : options.includeSourceMaps,
+        plugins: ([[TemplateTransformPlugins, pluginOptions]] as any[])
     });
 
     return { output: result?.code, map: result?.map }

@@ -11,19 +11,16 @@ describe("transform", function () {
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
       includeSourceMaps: false,
-      includeTemplateTokens: false,
     });
 
-    expect(templates).toMatchInlineSnapshot(`
-      {
-        "output": "import { template } from "@ember/template-compiler";
+    expect(templates.output).toMatchInlineSnapshot(`
+      "import { template } from "@ember/template-compiler";
       export default template("Hello!", {
         moduleName: "foo.gjs",
         scope: instance => {
           return {};
         }
-      });",
-      }
+      });"
     `);
   });
 
@@ -34,20 +31,17 @@ describe("transform", function () {
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: false,
-      includeTemplateTokens: false,
+      includeSourceMaps: false
     });
 
-    expect(templates).toMatchInlineSnapshot(`
-      {
-        "output": "import { template } from "@ember/template-compiler";
+    expect(templates.output).toMatchInlineSnapshot(`
+      "import { template } from "@ember/template-compiler";
       export default template("Hello \`world\`!", {
         moduleName: "foo.gjs",
         scope: instance => {
           return {};
         }
-      });",
-      }
+      });"
     `);
   });
 
@@ -59,13 +53,11 @@ describe("transform", function () {
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: false,
-      includeTemplateTokens: false,
+      includeSourceMaps: false
     });
 
-    expect(templates).toMatchInlineSnapshot(`
-      {
-        "output": "import { template } from "@ember/template-compiler";
+    expect(templates.output).toMatchInlineSnapshot(`
+      "import { template } from "@ember/template-compiler";
       class X {
         message: string;
         static {
@@ -79,8 +71,7 @@ describe("transform", function () {
             });
           }
         }
-      }",
-      }
+      }"
     `);
   });
 
@@ -92,13 +83,11 @@ describe("transform", function () {
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: false,
-      includeTemplateTokens: false,
+      includeSourceMaps: false
     });
 
-    expect(templates).toMatchInlineSnapshot(`
-      {
-        "output": "import { template } from "@ember/template-compiler";
+    expect(templates.output).toMatchInlineSnapshot(`
+      "import { template } from "@ember/template-compiler";
       const message: string;
       class X {
         static {
@@ -114,89 +103,7 @@ describe("transform", function () {
             });
           }
         }
-      }",
-      }
-    `);
-  });
-
-  it("hbs`Hello`", function () {
-    const input = `hbs\`Hello!\``;
-    const templates = transform({
-      content: input,
-      getTemplateLocals,
-      relativePath: "foo.gjs",
-      templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: false,
-      includeTemplateTokens: false,
-    });
-
-    expect(templates).toMatchInlineSnapshot(`
-      {
-        "output": "hbs\`Hello!\`",
-      }
-    `);
-  });
-
-  it("hbs`Hello \\`world\\``", function () {
-    const input = `hbs\`Hello \\\`world\\\`!\``; // template tag with escaped backticks in content
-    const templates = transform({
-      content: input,
-      getTemplateLocals,
-      relativePath: "foo.gjs",
-      templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: false,
-      includeTemplateTokens: false,
-    });
-
-    expect(templates).toMatchInlineSnapshot(`
-      {
-        "output": "hbs\`Hello \\\`world\\\`!\`",
-      }
-    `);
-  });
-
-  it("hbs`Hello` with import statement", function () {
-    const input =
-      `import { hbs } from 'ember-template-imports'\n` +
-      "const Greeting = hbs`Hello!`\n";
-    const templates = transform({
-      content: input,
-      getTemplateLocals,
-      relativePath: "foo.gjs",
-      templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: false,
-      includeTemplateTokens: false,
-    });
-
-    const expected = {
-      output:
-        "import { hbs } from 'ember-template-imports'\nconst Greeting = hbs(`Hello!`, { strictMode: true })\n",
-      replacements: [
-        {
-          type: "start",
-          index: 62,
-          oldLength: 4,
-          newLength: 11,
-          originalCol: 18,
-          originalLine: 2,
-        },
-        {
-          type: "end",
-          index: 72,
-          oldLength: 1,
-          newLength: 24,
-          originalCol: 28,
-          originalLine: 2,
-        },
-      ],
-    };
-
-    expect(templates).toMatchInlineSnapshot(`
-      {
-        "output": "import { hbs } from 'ember-template-imports'
-      const Greeting = hbs\`Hello!\`
-      ",
-      }
+      }"
     `);
   });
 
@@ -207,8 +114,7 @@ describe("transform", function () {
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: true,
-      includeTemplateTokens: false,
+      includeSourceMaps: true
     });
 
     expect(templates.output).toContain("//# sourceMappingURL");
@@ -220,8 +126,7 @@ describe("transform", function () {
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: true,
-      includeTemplateTokens: false,
+      includeSourceMaps: true
     });
 
     expect(templates.output).not.toContain("//# sourceMappingURL");

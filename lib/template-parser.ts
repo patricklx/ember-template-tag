@@ -58,7 +58,6 @@ export function getParser(superclass = Parser) {
                     this.next();
                     value = this.state.value;
                 }
-                const contentNode = this.startNode() as StringLiteral;
                 const properties = this.input.slice(node.startRange[0], this.state.pos - 1).split(' ').slice(1).filter(x => !!x).map(p => p.split('='));
                 node.tagProperties = {};
                 properties.forEach((p) => {
@@ -66,6 +65,8 @@ export function getParser(superclass = Parser) {
                 });
                 node.startRange[1] = this.state.pos;
                 contentRange[0] = this.state.pos;
+                this.next();
+                const contentNode = this.startNode() as StringLiteral;
                 while (openTemplates) {
                     if (
                         this.state.value === '<' &&
