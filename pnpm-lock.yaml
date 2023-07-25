@@ -9,7 +9,7 @@ dependencies:
     specifier: ^7.22.9
     version: 7.22.9
   '@babel/parser':
-    specifier: ^7.22.7
+    specifier: 7.22.7
     version: 7.22.7
   '@babel/traverse':
     specifier: ^7.22.8
