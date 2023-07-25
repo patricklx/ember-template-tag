@@ -6,7 +6,7 @@ describe("transform", function () {
   it("<template></template>", function () {
     const input = `<template>Hello!</template>`;
     const templates = transform({
-      content: input,
+      input: input,
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
@@ -27,7 +27,7 @@ describe("transform", function () {
   it("<template></template> with backticks in content", function () {
     const input = "<template>Hello `world`!</template>";
     const templates = transform({
-      content: input,
+      input: input,
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
@@ -49,7 +49,7 @@ describe("transform", function () {
     const input =
       "class X {message: string; <template>Hello {{this.message}}!</template>}";
     const templates = transform({
-      content: input,
+      input: input,
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
@@ -79,7 +79,7 @@ describe("transform", function () {
     const input =
       "const message:string; class X {<template>Hello {{message.x}}!</template>}";
     const templates = transform({
-      content: input,
+      input: input,
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
@@ -110,7 +110,7 @@ describe("transform", function () {
   it("includes source maps", function () {
     const input = `<template>Hello!</template>`;
     const templates = transform({
-      content: input,
+      input: input,
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
@@ -122,7 +122,7 @@ describe("transform", function () {
   it("doesn't include source maps if no templates", function () {
     const input = `const foo = "Hello!"`;
     const templates = transform({
-      content: input,
+      input: input,
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,

@@ -20,7 +20,7 @@ describe("parseTemplates", function () {
       templateTag: "template",
     });
 
-    expect(templates.results).toMatchInlineSnapshot(`
+    expect(templates).toMatchInlineSnapshot(`
       [
         {
           "contentRange": [
@@ -56,7 +56,7 @@ describe("parseTemplates", function () {
       templateTag: "template",
     });
 
-    expect(templates.results).toMatchInlineSnapshot(`
+    expect(templates).toMatchInlineSnapshot(`
       [
         {
           "contentRange": [
@@ -94,7 +94,7 @@ describe("parseTemplates", function () {
       templateTag: "template",
     });
 
-    expect(templates.results).toMatchInlineSnapshot(`
+    expect(templates).toMatchInlineSnapshot(`
       [
         {
           "contentRange": [
@@ -131,7 +131,7 @@ describe("parseTemplates", function () {
       templateTag: "template",
     });
 
-    expect(templates.results).toMatchInlineSnapshot(`
+    expect(templates).toMatchInlineSnapshot(`
       [
         {
           "contentRange": [
@@ -168,7 +168,7 @@ describe("parseTemplates", function () {
       templateTag: "template",
     });
 
-    expect(templates.results).toMatchInlineSnapshot(`
+    expect(templates).toMatchInlineSnapshot(`
       [
         {
           "contentRange": [
@@ -202,7 +202,7 @@ describe("parseTemplates", function () {
       templateTag: "template",
     });
 
-    expect(templates.results).toMatchInlineSnapshot(`[]`);
+    expect(templates).toMatchInlineSnapshot(`[]`);
   });
 
   it("lol`hahahaha` with options", function () {
@@ -218,6 +218,6 @@ describe("parseTemplates", function () {
       ],
     });
 
-    expect(templates.results).toEqual([]);
+    expect(templates).toEqual([]);
   });
 });

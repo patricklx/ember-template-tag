@@ -137,7 +137,7 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
 
 type PreprocessOptions = {
     ast?: b.Node;
-    content: string;
+    input: string;
     templateTag?: string;
     relativePath: string;
     explicitMode?: boolean;
@@ -150,8 +150,8 @@ export function transform(options: PreprocessOptions) {
 
     const plugins = (['decorators', 'typescript', 'classProperties', 'classStaticBlock', 'classPrivateProperties'] as ParserPlugin[]).concat(options.babelPlugins || []);
     let ast = options.ast;
-    if (options.content) {
-        ast = parse(options.content, {
+    if (options.input) {
+        ast = parse(options.input, {
             ranges: true,
             templateTag: options.templateTag || DEFAULT_PARSE_TEMPLATES_OPTIONS.templateTag,
             plugins: plugins,
@@ -162,7 +162,7 @@ export function transform(options: PreprocessOptions) {
 
     if (!(ast?.extra?.detectedTemplateNodes as any[])?.length) {
         return {
-            output: options.content
+            output: options.input
         }
     }
 
@@ -172,7 +172,7 @@ export function transform(options: PreprocessOptions) {
         moduleName: options.relativePath || ''
     }
 
-    const result = transformFromAstSync(ast!, options.content, {
+    const result = transformFromAstSync(ast!, options.input, {
         cloneInputAst: false,
         sourceMaps: options.includeSourceMaps === true ? 'both' : options.includeSourceMaps,
         plugins: ([[TemplateTransformPlugins, pluginOptions]] as any[])
