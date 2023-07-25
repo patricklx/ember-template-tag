@@ -99,15 +99,7 @@ export function parseTemplates(
   const results: TemplateMatch[] = [];
   const templateTag = options?.templateTag;
 
-  const ast = parse(template,
-      {
-        ranges: true,
-        allowImportExportEverywhere: true,
-        errorRecovery: true,
-        templateTag,
-        plugins: ['typescript', 'decorators'],
-      }
-  );
+  const ast = parse(template);
 
   return parseTemplatesFromAst(ast, relativePath, options);
 }

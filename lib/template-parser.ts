@@ -2,6 +2,7 @@ import Parser from '@babel/parser/lib/parser';
 import * as PluginUtils from '@babel/parser/lib/plugin-utils';
 import { ClassBody, MemberExpression, Node, Program, StringLiteral } from '@babel/types';
 import { ParserOptions } from '@babel/parser';
+import { TEMPLATE_TAG_NAME } from './util';
 
 export type EmberNode = Node & {
     tagName: string;
@@ -12,8 +13,15 @@ export type EmberNode = Node & {
 };
 
 
-export default function parse(input: string, options: ParserOptions & { templateTag?: string }) {
-    const parser = createParser(options, input);
+export default function parse(input: string, options?: Partial<ParserOptions> & { templateTag?: string }) {
+    const opts = Object.assign({
+        ranges: true,
+        allowImportExportEverywhere: true,
+        errorRecovery: true,
+        templateTag: TEMPLATE_TAG_NAME,
+        plugins: ['typescript', 'decorators'],
+    }, options)
+    const parser = createParser(opts, input);
     return parser.parse();
 }
 
