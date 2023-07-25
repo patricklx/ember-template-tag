@@ -138,7 +138,7 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
 type PreprocessOptions = {
     ast?: b.Node;
     content: string;
-    templateTag: string;
+    templateTag?: string;
     relativePath: string;
     explicitMode?: boolean;
     babelPlugins?: ParserPlugin[];
