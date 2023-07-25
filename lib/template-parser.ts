@@ -91,9 +91,9 @@ export function getParser(superclass = Parser) {
                         openTemplates -= 1;
                         if (openTemplates === 0) {
                             contentRange[1] = this.state.pos - 1;
-                            this.finishNodeAt(contentNode, 'StringLiteral', this.state.lastTokEndLoc);
+                            this.finishNodeAt(contentNode, 'TemplateLiteral', this.state.lastTokEndLoc);
                             value = this.state.value;
-                            contentNode.value = this.input.slice(...contentRange);
+                            contentNode.quasis = [b.templateElement(this.input.slice(...contentRange))];
                             while (value !== '>') {
                                 this.next();
                                 value = this.state.value;
