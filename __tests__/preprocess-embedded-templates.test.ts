@@ -45,6 +45,48 @@ describe("transform", function () {
     `);
   });
 
+  it("<template></template> should not change spacing", function () {
+    const input = `
+      const template = '';
+      <template>Hello \`world\`!</template>
+      
+      const template1 = '';
+      const x = {
+          b: <template>Hello \`world\`!</template>
+      }
+    `;
+    const templates = transform({
+      input: input,
+      linterMode: true,
+      getTemplateLocals,
+      relativePath: "foo.gjs",
+      templateTag: util.TEMPLATE_TAG_NAME,
+      includeSourceMaps: false,
+    });
+
+    expect(templates.output).toMatchInlineSnapshot(`
+      "
+            const template = '';
+            template("Hello \`world\`!", {
+        moduleName: "foo.gjs",
+        scope: instance => {
+          return {};
+        }
+      })
+            
+            const template1 = '';
+            const x = {
+                b: template("Hello \`world\`!", {
+        moduleName: "foo.gjs",
+        scope: instance => {
+          return {};
+        }
+      })
+            }
+          "
+    `);
+  });
+
   it("<template></template> with existing template var", function () {
     const input = `
       const template = '';
