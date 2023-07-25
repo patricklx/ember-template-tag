@@ -26,8 +26,11 @@ function minify(htmlContent: string) {
 }
 
 function buildScope(path: NodePath<EmberNode>, options: TransformOptions) {
-    const locals = options.getTemplateLocals(path.node.contentNode.value, { includeHtmlElements: true});
-    const properties = locals.map(l => {
+    const locals = options.getTemplateLocals(path.node.contentNode.value);
+    const localsWithtemplateTags = options.getTemplateLocals(path.node.contentNode.value, { includeHtmlElements: true });
+    const templateTags = localsWithtemplateTags.filter(l => !locals.includes(l) && path.scope.hasBinding(l));
+    const all = [...locals, ...templateTags];
+    const properties = all.map(l => {
         const id = l.split('.')[0];
         return b.objectProperty(b.identifier(id), b.identifier(id), false, true);
     })
@@ -70,8 +73,10 @@ function buildTemplateCall(identifier: string,path: NodePath<EmberNode>, options
     }
     const stringLiteral = b.stringLiteral(content);
     stringLiteral.loc = path.node.contentNode.loc;
+    const callId = b.identifier(identifier);
+    path.state.calls.push(callId);
     return b.callExpression(
-        b.identifier(identifier),
+        callId,
         [
             stringLiteral,
             optionsExpression
@@ -80,21 +85,27 @@ function buildTemplateCall(identifier: string,path: NodePath<EmberNode>, options
 }
 
 function ensureImport(path: NodePath<EmberNode>) {
-    let templateCallSpecifier = 'template';
-    let counter = 1;
-    while (templateCallSpecifier in path.scope.references) {
+    let templateCallSpecifier = path.state.templateCallSpecifier || 'template';
+    let counter = path.state.templateCallSpecifierCounter || 1;
+    while (path.scope.hasBinding(templateCallSpecifier)) {
         templateCallSpecifier = 'template' + counter;
         counter++;
     }
-    const imp = b.importDeclaration([b.importSpecifier(b.identifier(templateCallSpecifier), b.identifier('template'))], b.stringLiteral('@ember/template-compiler'))
+    if (path.state.addedImport && templateCallSpecifier !== path.state.templateCallSpecifier) {
+        path.state.addedImport.name = templateCallSpecifier;
+        path.state.calls.forEach((c: any) => {
+            c.name = templateCallSpecifier;
+        })
+    }
+    const id = b.identifier(templateCallSpecifier);
+    const imp = b.importDeclaration([b.importSpecifier(id, b.identifier('template'))], b.stringLiteral('@ember/template-compiler'));
     if (!path.state.addedImport) {
-        path.state.addedImport = true;
+        path.state.addedImport = id;
         (path.state.program as NodePath<b.Program>).node.body.splice(0, 0, imp);
         path.state.progra = (path.state.program as NodePath<b.Program>).replaceWith(path.state.program);
     }
-    if (!path.state.templateCallSpecifier) {
-        path.state.templateCallSpecifier = templateCallSpecifier;
-    }
+    path.state.templateCallSpecifier = templateCallSpecifier;
+    path.state.templateCallSpecifierCounter = counter;
     return path.state.templateCallSpecifier;
 }
 
@@ -105,6 +116,7 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
             Program(path: NodePath<b.Program>) {
                 path.state = {};
                 path.state.program = path;
+                path.state.calls = [];
             },
             // @ts-ignore
             EmberTemplate(path: NodePath<EmberNode>, pluginPass) {
@@ -153,6 +165,7 @@ export function transform(options: PreprocessOptions) {
     if (options.input) {
         ast = parse(options.input, {
             ranges: true,
+            tokens: true,
             templateTag: options.templateTag || DEFAULT_PARSE_TEMPLATES_OPTIONS.templateTag,
             plugins: plugins,
             allowImportExportEverywhere: true,

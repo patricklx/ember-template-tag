@@ -31,7 +31,7 @@ describe("transform", function () {
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: false
+      includeSourceMaps: false,
     });
 
     expect(templates.output).toMatchInlineSnapshot(`
@@ -45,6 +45,45 @@ describe("transform", function () {
     `);
   });
 
+  it("<template></template> with existing template var", function () {
+    const input = `
+      const template = '';
+      <template>Hello \`world\`!</template>
+      
+      const template1 = '';
+      const x = {
+          b: <template>Hello \`world\`!</template>
+      }
+    `;
+    const templates = transform({
+      input: input,
+      getTemplateLocals,
+      relativePath: "foo.gjs",
+      templateTag: util.TEMPLATE_TAG_NAME,
+      includeSourceMaps: false,
+    });
+
+    expect(templates.output).toMatchInlineSnapshot(`
+      "import { template as template2 } from "@ember/template-compiler";
+      const template = '';
+      export default template2("Hello \`world\`!", {
+        moduleName: "foo.gjs",
+        scope: instance => {
+          return {};
+        }
+      });
+      const template1 = '';
+      const x = {
+        b: template2("Hello \`world\`!", {
+          moduleName: "foo.gjs",
+          scope: instance => {
+            return {};
+          }
+        })
+      };"
+    `);
+  });
+
   it("<template></template> in class", function () {
     const input =
       "class X {message: string; <template>Hello {{this.message}}!</template>}";
@@ -53,7 +92,7 @@ describe("transform", function () {
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: false
+      includeSourceMaps: false,
     });
 
     expect(templates.output).toMatchInlineSnapshot(`
@@ -83,7 +122,7 @@ describe("transform", function () {
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: false
+      includeSourceMaps: false,
     });
 
     expect(templates.output).toMatchInlineSnapshot(`
@@ -107,6 +146,39 @@ describe("transform", function () {
     `);
   });
 
+  it("<template></template> in class with html tag binding", function () {
+    const input =
+      "const message:string; class X {<template><message></message><div>{{x}}</div>!</template>}";
+    const templates = transform({
+      input: input,
+      getTemplateLocals,
+      relativePath: "foo.gjs",
+      templateTag: util.TEMPLATE_TAG_NAME,
+      includeSourceMaps: false,
+    });
+
+    expect(templates.output).toMatchInlineSnapshot(`
+      "import { template } from "@ember/template-compiler";
+      const message: string;
+      class X {
+        static {
+          {
+            template("<message></message><div>{{x}}</div>!", {
+              component: this,
+              moduleName: "foo.gjs",
+              scope: instance => {
+                return {
+                  x,
+                  message
+                };
+              }
+            });
+          }
+        }
+      }"
+    `);
+  });
+
   it("includes source maps", function () {
     const input = `<template>Hello!</template>`;
     const templates = transform({
@@ -114,7 +186,7 @@ describe("transform", function () {
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: true
+      includeSourceMaps: true,
     });
 
     expect(templates.output).toContain("//# sourceMappingURL");
@@ -126,7 +198,7 @@ describe("transform", function () {
       getTemplateLocals,
       relativePath: "foo.gjs",
       templateTag: util.TEMPLATE_TAG_NAME,
-      includeSourceMaps: true
+      includeSourceMaps: true,
     });
 
     expect(templates.output).not.toContain("//# sourceMappingURL");
