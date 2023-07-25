@@ -6,6 +6,7 @@ import { ParserPlugin } from '@babel/parser';
 import { NodePath } from '@babel/traverse';
 import { getTemplateLocals } from '@glimmer/syntax';
 import * as glimmer from '@glimmer/syntax';
+import { SourceLocation } from '@babel/types';
 
 type TransformOptions = {
     getTemplateLocals: typeof getTemplateLocals,
@@ -158,6 +159,16 @@ type PreprocessOptions = {
     getTemplateLocals?: (html: string, options?: any) => string[]
 }
 
+type Replacement = {
+    original: {
+        loc: Required<b.SourceLocation>,
+        range: [number, number],
+    };
+    replaced: {
+        range: [number, number]
+    }
+}
+
 function replaceRange(
     s: string,
     start: number,
@@ -197,7 +208,7 @@ export function transform(options: PreprocessOptions) {
 
     if (options.linterMode) {
         let output = options.input;
-        const replacements: {originalRange: [number, number]; replacedRange: [number, number]}[] = [];
+        const replacements: Replacement[] = [];
         (ast?.extra?.detectedTemplateNodes as EmberNode[]).reverse().forEach((node: EmberNode) => {
             const p = b.program([]);
             // @ts-ignore
@@ -212,12 +223,15 @@ export function transform(options: PreprocessOptions) {
             const range = [node.start, end] as [number, number];
             const diff = end - node.end!;
             replacements.forEach((r) => {
-                r.replacedRange[0] += diff;
-                r.replacedRange[1] += diff;
+                r.replaced.range[0] += diff;
+                r.replaced.range[1] += diff;
             })
             replacements.push({
-                originalRange: node.range!,
-                replacedRange: range
+                original: {
+                    loc: node.loc!,
+                    range: node.range!
+                },
+                replaced: { range }
             });
         });
         return { output, replacements }
