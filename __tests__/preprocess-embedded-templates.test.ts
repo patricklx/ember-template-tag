@@ -67,21 +67,11 @@ describe("transform", function () {
     expect(templates.output).toMatchInlineSnapshot(`
       "
             const template = '';
-            template("Hello \`world\`!", {
-        moduleName: "foo.gjs",
-        scope: instance => {
-          return {};
-        }
-      })
+            template("Hello \`world\`!", {  moduleName: "foo.gjs",  scope: instance => {    return {};  }})
             
             const template1 = '';
             const x = {
-                b: template("Hello \`world\`!", {
-        moduleName: "foo.gjs",
-        scope: instance => {
-          return {};
-        }
-      })
+                b: template("Hello \`world\`!", {  moduleName: "foo.gjs",  scope: instance => {    return {};  }})
             }
           "
     `);

@@ -206,8 +206,9 @@ export function transform(options: PreprocessOptions) {
                 cloneInputAst: false,
                 plugins: ([[TemplateTransformPlugins, pluginOptions]] as any[])
             });
-            output = replaceRange(output, node.start!!, node.end!!, replacement!!.code!!);
-            const end = node.start! + replacement!.code!.length;
+            const code = replacement!!.code!!.replace(/\n/g, '');
+            output = replaceRange(output, node.start!!, node.end!!, code);
+            const end = node.start! + code.length;
             const range = [node.start, end] as [number, number];
             const diff = end - node.end!;
             replacements.forEach((r) => {
