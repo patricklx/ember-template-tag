@@ -12,6 +12,9 @@
   "keywords": [],
   "author": "Patrick Pircher",
   "license": "ISC",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org"
+  },
   "dependencies": {
     "@babel/core": "^7.22.9",
     "@babel/parser": "^7.22.7",
