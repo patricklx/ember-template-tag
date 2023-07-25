@@ -130,8 +130,8 @@ export function parseTemplates(
       results.push({
         type: 'template-tag',
         tagName: node.tagName,
-        contents: node.content,
-        contentRange: node.contentRange,
+        contents: node.contentNode.value,
+        contentRange: node.contentNode.range as [number, number],
         range: node.range!!,
         startRange: {
           start: node.startRange[0],

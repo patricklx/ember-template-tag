@@ -1,15 +1,14 @@
 import Parser from '@babel/parser/lib/parser';
 import * as PluginUtils from '@babel/parser/lib/plugin-utils';
-import { ClassBody, MemberExpression, Node, Program } from '@babel/types';
+import { ClassBody, MemberExpression, Node, Program, StringLiteral } from '@babel/types';
 import { ParserOptions } from '@babel/parser';
 
 export type EmberNode = Node & {
     tagName: string;
-    content: string;
+    contentNode: StringLiteral;
     tagProperties: Record<string, string|undefined>;
     startRange: [number, number];
     endRange: [number, number];
-    contentRange: [number, number];
 };
 
 
@@ -59,6 +58,7 @@ export function getParser(superclass = Parser) {
                     this.next();
                     value = this.state.value;
                 }
+                const contentNode = this.startNode() as StringLiteral;
                 const properties = this.input.slice(node.startRange[0], this.state.pos - 1).split(' ').slice(1).filter(x => !!x).map(p => p.split('='));
                 node.tagProperties = {};
                 properties.forEach((p) => {
@@ -82,14 +82,15 @@ export function getParser(superclass = Parser) {
                         openTemplates -= 1;
                         if (openTemplates === 0) {
                             contentRange[1] = this.state.pos - 1;
+                            this.finishNodeAt(contentNode, 'StringLiteral', this.state.lastTokEndLoc);
                             value = this.state.value;
+                            contentNode.value = this.input.slice(...contentRange);
                             while (value !== '>') {
                                 this.next();
                                 value = this.state.value;
                             }
                             node.endRange[1] = this.state.pos;
-                            node.content = this.input.slice(...contentRange);
-                            node.contentRange = contentRange;
+                            node.contentNode = contentNode;
                             this.isInsideTemplate = false;
                             this.next();
                             this.detectedTemplateNodes.push(node);

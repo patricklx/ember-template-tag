@@ -19,12 +19,14 @@ declare module '@babel/parser/lib/parser' {
     state: {
       value: string;
       pos: number;
+      lastTokEndLoc: any;
     };
 
     constructor(options: ParserOptions, input: string);
 
     startNode(): Node;
     finishNode(node: Node, type: string): Node;
+    finishNodeAt(node: Node, type: string, loc: any): Node;
     finishToken(type: string, value: string): void;
     next(): void;
     parse(): Program;

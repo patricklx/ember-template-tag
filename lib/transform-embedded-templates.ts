@@ -26,16 +26,7 @@ function minify(htmlContent: string) {
 }
 
 function buildScope(path: NodePath<EmberNode>, options: TransformOptions) {
-    let content = path.node.content;
-    if ('trim' in path.node.tagProperties) {
-        content = content.trim();
-    }
-
-    if ('minify' in path.node.tagProperties) {
-        content = minify(content);
-    }
-
-    const locals = options.getTemplateLocals(content, { includeHtmlElements: true});
+    const locals = options.getTemplateLocals(path.node.contentNode.value, { includeHtmlElements: true});
     const properties = locals.map(l => {
         const id = l.split('.')[0];
         return b.objectProperty(b.identifier(id), b.identifier(id), false, true);
@@ -52,7 +43,7 @@ function buildEval() {
     ]));
 }
 
-function buildTemplateCall(path: NodePath<EmberNode>, options: TransformOptions) {
+function buildTemplateCall(identifier: string,path: NodePath<EmberNode>, options: TransformOptions) {
     let optionsExpression: b.ObjectExpression;
     const explicit = options.explicit;
     const property = explicit ? buildScope(path, options) : buildEval();
@@ -69,10 +60,20 @@ function buildTemplateCall(path: NodePath<EmberNode>, options: TransformOptions)
             property
         ])
     }
+    let content = path.node.contentNode.value;
+    if ('trim' in path.node.tagProperties) {
+        content = content.trim();
+    }
+
+    if ('minify' in path.node.tagProperties) {
+        content = minify(content);
+    }
+    const stringLiteral = b.stringLiteral(content);
+    stringLiteral.loc = path.node.contentNode.loc;
     return b.callExpression(
-        b.identifier('template'),
+        b.identifier(identifier),
         [
-            b.stringLiteral(path.node.content),
+            stringLiteral,
             optionsExpression
         ]
     )
@@ -82,8 +83,13 @@ function ensureImport(path: NodePath<EmberNode>) {
     const imp = b.importDeclaration([b.importSpecifier(b.identifier('template'), b.identifier('template'))], b.stringLiteral('@ember/template-compiler'))
     if (!path.state.addedImport) {
         path.state.addedImport = true;
-        (path.state.program as b.Program).body.splice(0, 0, imp);
+        (path.state.program as NodePath<b.Program>).node.body.splice(0, 0, imp);
+        path.state.progra = (path.state.program as NodePath<b.Program>).replaceWith(path.state.program);
     }
+    if (!path.state.templateCallSpecifier) {
+        path.state.templateCallSpecifier = 'template';
+    }
+    return path.state.templateCallSpecifier;
 }
 
 const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions) => {
@@ -92,25 +98,30 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
         visitor: {
             Program(path: NodePath<b.Program>) {
                 path.state = {};
-                path.state.program = path.node;
+                path.state.program = path;
             },
             // @ts-ignore
             EmberTemplate(path: NodePath<EmberNode>, pluginPass) {
-                ensureImport(path);
+                const specifier = ensureImport(path);
                 if (path.parent?.type === 'ClassBody') {
                     const node = path.parent as b.ClassBody
-                    const templateExpr = buildTemplateCall(path, options);
+                    const templateExpr = buildTemplateCall(specifier, path, options);
+                    templateExpr.loc = path.node.loc;
                     (templateExpr as any).orginalNode = path.node;
                     let staticBlock = node.body.find(m => m.type === 'StaticBlock') as b.StaticBlock | null;
+                    if (staticBlock) {
+                        node.body.splice(node.body.indexOf(staticBlock), 1);
+                    }
                     if (!staticBlock) {
-                        staticBlock = b.staticBlock([])
-                        node.body.push(staticBlock);
+                        staticBlock = b.staticBlock([]);
                     }
                     (templateExpr as any).orginalNode = path.node;
                     staticBlock.body.push(b.blockStatement([b.expressionStatement(templateExpr)]));
-                    path.remove();
+                    path.replaceWith(staticBlock);
+                    path.parentPath?.replaceWithMultiple(node.body);
                 } else {
-                    const templateExpr = buildTemplateCall(path, options);
+                    const templateExpr = buildTemplateCall(specifier, path, options);
+                    templateExpr.loc = path.node.loc;
                     if (path.parent.type === 'Program') {
                         const exportDefault = b.exportDefaultDeclaration(templateExpr);
                         path.replaceWith(exportDefault)
@@ -162,12 +173,14 @@ export function transform(options: PreprocessOptions) {
 
     const result = transformFromAstSync(ast!, options.content, {
         cloneInputAst: false,
-        sourceMaps: options.includeSourceMaps,
+        ast: true,
+        sourceMaps: true,
         plugins: ([[TemplateTransformPlugins, pluginOptions]] as any[]),
         parserOpts: {
             ranges: true,
             plugins
         }
     });
-    return { output: result?.code, map: result?.map, ast: result?.ast, detectedTemplateNodes: ast?.extra?.detectedTemplateNodes }
+
+    return { output: result?.code, map: result?.map }
 }
