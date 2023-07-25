@@ -4,6 +4,7 @@ import { PluginOptions, PluginTarget, transformFromAstSync } from '@babel/core';
 import * as b from '@babel/types';
 import { ParserPlugin } from '@babel/parser';
 import { NodePath } from '@babel/traverse';
+import { generate } from '@babel/generate';
 import { getTemplateLocals } from '@glimmer/syntax';
 import * as glimmer from '@glimmer/syntax';
 import { SourceLocation } from '@babel/types';
@@ -131,15 +132,18 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
                     const templateExpr = buildTemplateCall(specifier, path, options);
                     templateExpr.loc = path.node.loc;
                     const staticBlock = b.staticBlock([b.blockStatement([b.expressionStatement(templateExpr)])]);
+                    (path.node as any).replacedWith = staticBlock;
                     path.replaceWith(staticBlock);
                 } else {
                     const templateExpr = buildTemplateCall(specifier, path, options);
                     templateExpr.loc = path.node.loc;
                     if (path.parent.type === 'Program' && !options.linterMode) {
                         const exportDefault = b.exportDefaultDeclaration(templateExpr);
+                        (path.node as any).replacedWith = exportDefault;
                         path.replaceWith(exportDefault)
                         return
                     }
+                    (path.node as any).replacedWith = templateExpr;
                     path.replaceWith(templateExpr);
                 }
             }
@@ -206,18 +210,18 @@ export function transform(options: PreprocessOptions) {
         linterMode: options.linterMode || false
     };
 
+    const result = transformFromAstSync(ast!, options.input, {
+        cloneInputAst: false,
+        retainLines: options.linterMode,
+        sourceMaps: options.includeSourceMaps === true ? 'both' : options.includeSourceMaps,
+        plugins: ([[TemplateTransformPlugins, pluginOptions]] as any[])
+    });
+
     if (options.linterMode) {
         let output = options.input;
         const replacements: Replacement[] = [];
         (ast?.extra?.detectedTemplateNodes as EmberNode[]).reverse().forEach((node: EmberNode) => {
-            const p = b.program([]);
-            // @ts-ignore
-            p.body.push(node);
-            const replacement = transformFromAstSync(p, undefined, {
-                cloneInputAst: false,
-                plugins: ([[TemplateTransformPlugins, pluginOptions]] as any[])
-            });
-            const code = replacement!!.code!!.replace(/\n/g, '');
+            const code = generate((node as any).replacedWith).code;
             output = replaceRange(output, node.start!!, node.end!!, code);
             const end = node.start! + code.length;
             const range = [node.start, end] as [number, number];
@@ -236,12 +240,6 @@ export function transform(options: PreprocessOptions) {
         });
         return { output, replacements }
     }
-
-    const result = transformFromAstSync(ast!, options.input, {
-        cloneInputAst: false,
-        sourceMaps: options.includeSourceMaps === true ? 'both' : options.includeSourceMaps,
-        plugins: ([[TemplateTransformPlugins, pluginOptions]] as any[])
-    });
 
     return { output: result?.code, map: result?.map }
 }
