@@ -119,7 +119,7 @@ export function parseTemplatesFromAst(
       results.push({
         type: 'template-tag',
         tagName: node.tagName,
-        contents: node.contentNode.value,
+        contents: node.contentNode.quasis[0].value.raw,
         contentRange: node.contentNode.range as [number, number],
         range: node.range!!,
         startRange: {

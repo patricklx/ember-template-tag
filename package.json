@@ -1,6 +1,6 @@
 {
   "name": "ember-template-tag",
-  "version": "2.0.11",
+  "version": "2.0.12",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -22,6 +22,7 @@
     "@babel/core": "^7.22.9",
     "@babel/parser": "7.22.7",
     "@babel/traverse": "^7.22.8",
+    "@babel/generator": "^7.22.9",
     "@glimmer/syntax": "^0.84.3"
   },
   "devDependencies": {
@@ -31,6 +32,7 @@
     "@glimmer/validator": "^0.84.3",
     "@types/babel__core": "^7.20.1",
     "@types/babel__traverse": "^7.20.1",
+    "@types/babel__generator": "^7.6.4",
     "@types/domhandler": "^2.4.2",
     "@types/htmlparser2": "^3.10.3",
     "@types/jest": "^29.5.3",

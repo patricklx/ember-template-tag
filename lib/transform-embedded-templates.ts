@@ -4,7 +4,7 @@ import { PluginOptions, PluginTarget, transformFromAstSync } from '@babel/core';
 import * as b from '@babel/types';
 import { ParserPlugin } from '@babel/parser';
 import { NodePath } from '@babel/traverse';
-import { generate } from '@babel/generate';
+import { default as generate } from '@babel/generator';
 import { getTemplateLocals } from '@glimmer/syntax';
 import * as glimmer from '@glimmer/syntax';
 import { SourceLocation } from '@babel/types';
@@ -29,17 +29,15 @@ function minify(htmlContent: string) {
 }
 
 function buildScope(path: NodePath<EmberNode>, options: TransformOptions) {
-    const locals = options.getTemplateLocals(path.node.contentNode.value);
-    const localsWithtemplateTags = options.getTemplateLocals(path.node.contentNode.value, { includeHtmlElements: true });
+    const locals = options.getTemplateLocals(path.node.contentNode.quasis[0].value.raw);
+    const localsWithtemplateTags = options.getTemplateLocals(path.node.contentNode.quasis[0].value.raw, { includeHtmlElements: true });
     const templateTags = localsWithtemplateTags.filter(l => !locals.includes(l) && path.scope.hasBinding(l));
     const all = [...locals, ...templateTags];
     const properties = all.map(l => {
         const id = l.split('.')[0];
         return b.objectProperty(b.identifier(id), b.identifier(id), false, true);
     })
-    const arrow = b.arrowFunctionExpression([b.identifier('instance')], b.blockStatement([
-        b.returnStatement(b.objectExpression(properties))
-    ]));
+    const arrow = b.arrowFunctionExpression([b.identifier('instance')], b.objectExpression(properties));
     return b.objectProperty(b.identifier('scope'), arrow);
 }
 
@@ -66,7 +64,7 @@ function buildTemplateCall(identifier: string,path: NodePath<EmberNode>, options
             property
         ])
     }
-    let content = path.node.contentNode.value;
+    let content = path.node.contentNode.quasis[0].value.raw;
     if ('trim' in path.node.tagProperties) {
         content = content.trim();
     }
@@ -74,14 +72,17 @@ function buildTemplateCall(identifier: string,path: NodePath<EmberNode>, options
     if ('minify' in path.node.tagProperties) {
         content = minify(content);
     }
-    const stringLiteral = b.stringLiteral(content);
-    stringLiteral.loc = path.node.contentNode.loc;
+    const templateLiteral = b.templateLiteral([b.templateElement({ raw: '' })], []);
+
+    templateLiteral.quasis[0].loc = path.node.contentNode.loc;
+    templateLiteral.quasis[0].value.raw = content;
+    templateLiteral.quasis[0].value.cooked = content;
     const callId = b.identifier(identifier);
     path.state.calls.push(callId);
     return b.callExpression(
         callId,
         [
-            stringLiteral,
+            templateLiteral,
             optionsExpression
         ]
     )
@@ -131,7 +132,7 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
                     const node = path.parent as b.ClassBody
                     const templateExpr = buildTemplateCall(specifier, path, options);
                     templateExpr.loc = path.node.loc;
-                    const staticBlock = b.staticBlock([b.blockStatement([b.expressionStatement(templateExpr)])]);
+                    const staticBlock = b.staticBlock([b.expressionStatement(templateExpr)]);
                     (path.node as any).replacedWith = staticBlock;
                     path.replaceWith(staticBlock);
                 } else {
@@ -186,7 +187,7 @@ export function transform(options: PreprocessOptions) {
 
     const plugins = (['decorators', 'typescript', 'classProperties', 'classStaticBlock', 'classPrivateProperties'] as ParserPlugin[]).concat(options.babelPlugins || []);
     let ast = options.ast;
-    if (options.input) {
+    if (!ast) {
         ast = parse(options.input, {
             ranges: true,
             tokens: true,
@@ -221,7 +222,7 @@ export function transform(options: PreprocessOptions) {
         let output = options.input;
         const replacements: Replacement[] = [];
         (ast?.extra?.detectedTemplateNodes as EmberNode[]).reverse().forEach((node: EmberNode) => {
-            const code = generate((node as any).replacedWith).code;
+            const code = generate((node as any).replacedWith, { compact: true }).code;
             output = replaceRange(output, node.start!!, node.end!!, code);
             const end = node.start! + code.length;
             const range = [node.start, end] as [number, number];

@@ -1,12 +1,19 @@
 import Parser from '@babel/parser/lib/parser';
 import * as PluginUtils from '@babel/parser/lib/plugin-utils';
-import { ClassBody, MemberExpression, Node, Program, StringLiteral } from '@babel/types';
+import {
+    ClassBody,
+    MemberExpression,
+    Node,
+    Program,
+    templateElement,
+    TemplateLiteral
+} from '@babel/types';
 import { ParserOptions } from '@babel/parser';
 import { TEMPLATE_TAG_NAME } from './util';
 
 export type EmberNode = Node & {
     tagName: string;
-    contentNode: StringLiteral;
+    contentNode: TemplateLiteral;
     tagProperties: Record<string, string|undefined>;
     startRange: [number, number];
     endRange: [number, number];
@@ -74,7 +81,7 @@ export function getParser(superclass = Parser) {
                 node.startRange[1] = this.state.pos;
                 contentRange[0] = this.state.pos;
                 this.next();
-                const contentNode = this.startNode() as StringLiteral;
+                const contentNode = this.startNode() as TemplateLiteral;
                 while (openTemplates) {
                     if (
                         this.state.value === '<' &&
@@ -91,9 +98,12 @@ export function getParser(superclass = Parser) {
                         openTemplates -= 1;
                         if (openTemplates === 0) {
                             contentRange[1] = this.state.pos - 1;
+                            const content = this.input.slice(...contentRange);
                             this.finishNodeAt(contentNode, 'TemplateLiteral', this.state.lastTokEndLoc);
                             value = this.state.value;
-                            contentNode.quasis = [b.templateElement(this.input.slice(...contentRange))];
+                            contentNode.quasis = [templateElement({ raw: '' }, true)];
+                            contentNode.quasis[0].value.raw = content;
+                            contentNode.quasis[0].value.cooked = content;
                             while (value !== '>') {
                                 this.next();
                                 value = this.state.value;

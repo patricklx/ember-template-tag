@@ -15,11 +15,9 @@ describe("transform", function () {
 
     expect(templates.output).toMatchInlineSnapshot(`
       "import { template } from "@ember/template-compiler";
-      export default template("Hello!", {
+      export default template(\`Hello!\`, {
         moduleName: "foo.gjs",
-        scope: instance => {
-          return {};
-        }
+        scope: instance => ({})
       });"
     `);
   });
@@ -36,11 +34,9 @@ describe("transform", function () {
 
     expect(templates.output).toMatchInlineSnapshot(`
       "import { template } from "@ember/template-compiler";
-      export default template("Hello \`world\`!", {
+      export default template(\`Hello \`world\`!\`, {
         moduleName: "foo.gjs",
-        scope: instance => {
-          return {};
-        }
+        scope: instance => ({})
       });"
     `);
   });
@@ -54,6 +50,14 @@ describe("transform", function () {
       const x = {
           b: <template>Hello \`world\`!</template>
       }
+      
+      class X {
+          x: string;
+          
+          <template>
+            <div>Hello \`world\`!</div>          
+          </template>
+      }
     `;
     const templates = transform({
       input: input,
@@ -64,14 +68,24 @@ describe("transform", function () {
       includeSourceMaps: false,
     });
 
+    expect(templates.output!.split('\n').length === input.split('\n').length);
+
     expect(templates.output).toMatchInlineSnapshot(`
       "
             const template = '';
-            template("Hello \`world\`!", {  moduleName: "foo.gjs",  scope: instance => {    return {};  }})
+            template(\`Hello \`world\`!\`,{moduleName:"foo.gjs",scope:instance=>({})})
             
             const template1 = '';
             const x = {
-                b: template("Hello \`world\`!", {  moduleName: "foo.gjs",  scope: instance => {    return {};  }})
+                b: template(\`Hello \`world\`!\`,{moduleName:"foo.gjs",scope:instance=>({})})
+            }
+            
+            class X {
+                x: string;
+                
+                static{template(\`
+                  <div>Hello \`world\`!</div>          
+                \`,{component:this,moduleName:"foo.gjs",scope:instance=>({})});}
             }
           "
     `);
@@ -98,19 +112,15 @@ describe("transform", function () {
     expect(templates.output).toMatchInlineSnapshot(`
       "import { template as template2 } from "@ember/template-compiler";
       const template = '';
-      export default template2("Hello \`world\`!", {
+      export default template2(\`Hello \`world\`!\`, {
         moduleName: "foo.gjs",
-        scope: instance => {
-          return {};
-        }
+        scope: instance => ({})
       });
       const template1 = '';
       const x = {
-        b: template2("Hello \`world\`!", {
+        b: template2(\`Hello \`world\`!\`, {
           moduleName: "foo.gjs",
-          scope: instance => {
-            return {};
-          }
+          scope: instance => ({})
         })
       };"
     `);
@@ -132,15 +142,11 @@ describe("transform", function () {
       class X {
         message: string;
         static {
-          {
-            template("Hello {{this.message}}!", {
-              component: this,
-              moduleName: "foo.gjs",
-              scope: instance => {
-                return {};
-              }
-            });
-          }
+          template(\`Hello {{this.message}}!\`, {
+            component: this,
+            moduleName: "foo.gjs",
+            scope: instance => ({})
+          });
         }
       }"
     `);
@@ -162,17 +168,13 @@ describe("transform", function () {
       const message: string;
       class X {
         static {
-          {
-            template("Hello {{message.x}}!", {
-              component: this,
-              moduleName: "foo.gjs",
-              scope: instance => {
-                return {
-                  message
-                };
-              }
-            });
-          }
+          template(\`Hello {{message.x}}!\`, {
+            component: this,
+            moduleName: "foo.gjs",
+            scope: instance => ({
+              message
+            })
+          });
         }
       }"
     `);
@@ -194,18 +196,14 @@ describe("transform", function () {
       const message: string;
       class X {
         static {
-          {
-            template("<message></message><div>{{x}}</div>!", {
-              component: this,
-              moduleName: "foo.gjs",
-              scope: instance => {
-                return {
-                  x,
-                  message
-                };
-              }
-            });
-          }
+          template(\`<message></message><div>{{x}}</div>!\`, {
+            component: this,
+            moduleName: "foo.gjs",
+            scope: instance => ({
+              x,
+              message
+            })
+          });
         }
       }"
     `);

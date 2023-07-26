@@ -8,6 +8,9 @@ dependencies:
   '@babel/core':
     specifier: ^7.22.9
     version: 7.22.9
+  '@babel/generator':
+    specifier: ^7.22.9
+    version: 7.22.9
   '@babel/parser':
     specifier: 7.22.7
     version: 7.22.7
@@ -34,6 +37,9 @@ devDependencies:
   '@types/babel__core':
     specifier: ^7.20.1
     version: 7.20.1
+  '@types/babel__generator':
+    specifier: ^7.6.4
+    version: 7.6.4
   '@types/babel__traverse':
     specifier: ^7.20.1
     version: 7.20.1
