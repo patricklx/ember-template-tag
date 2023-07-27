@@ -48,6 +48,22 @@ function buildEval() {
 }
 
 function buildTemplateCall(identifier: string,path: NodePath<EmberNode>, options: TransformOptions) {
+    let content = path.node.contentNode.quasis[0].value.raw;
+    if ('trim' in path.node.tagProperties) {
+        content = content.trim();
+    }
+
+    if ('minify' in path.node.tagProperties) {
+        content = minify(content);
+    }
+    const templateLiteral = b.templateLiteral([b.templateElement({ raw: '' })], []);
+    templateLiteral.quasis[0].loc = path.node.contentNode.loc;
+    templateLiteral.quasis[0].value.raw = content;
+    templateLiteral.quasis[0].value.cooked = content;
+
+    if (options.linterMode) {
+        return templateLiteral;
+    }
     let optionsExpression: b.ObjectExpression;
     const explicit = options.explicit;
     const property = explicit ? buildScope(path, options) : buildEval();
@@ -64,19 +80,6 @@ function buildTemplateCall(identifier: string,path: NodePath<EmberNode>, options
             property
         ])
     }
-    let content = path.node.contentNode.quasis[0].value.raw;
-    if ('trim' in path.node.tagProperties) {
-        content = content.trim();
-    }
-
-    if ('minify' in path.node.tagProperties) {
-        content = minify(content);
-    }
-    const templateLiteral = b.templateLiteral([b.templateElement({ raw: '' })], []);
-
-    templateLiteral.quasis[0].loc = path.node.contentNode.loc;
-    templateLiteral.quasis[0].value.raw = content;
-    templateLiteral.quasis[0].value.cooked = content;
     const callId = b.identifier(identifier);
     path.state.calls.push(callId);
     return b.callExpression(
@@ -102,17 +105,17 @@ function ensureImport(path: NodePath<EmberNode>, options: TransformOptions) {
         path.state.addedImport.name = templateCallSpecifier;
         path.state.calls.forEach((c: any) => {
             c.name = templateCallSpecifier;
-        })
+        });
     }
     const id = b.identifier(templateCallSpecifier);
     const imp = b.importDeclaration([b.importSpecifier(id, b.identifier('template'))], b.stringLiteral('@ember/template-compiler'));
     if (!path.state.addedImport) {
         path.state.addedImport = id;
         (path.state.program as NodePath<b.Program>).node.body.splice(0, 0, imp);
-        path.state.progra = (path.state.program as NodePath<b.Program>).replaceWith(path.state.program);
     }
     path.state.templateCallSpecifier = templateCallSpecifier;
     path.state.templateCallSpecifierCounter = counter;
+    (path.state.program.node as any).templateCallSpecifier = path.state.templateCallSpecifier;
     return path.state.templateCallSpecifier;
 }
 
@@ -129,7 +132,6 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
             EmberTemplate(path: NodePath<EmberNode>, pluginPass) {
                 const specifier = ensureImport(path, options);
                 if (path.parent?.type === 'ClassBody') {
-                    const node = path.parent as b.ClassBody
                     const templateExpr = buildTemplateCall(specifier, path, options);
                     templateExpr.loc = path.node.loc;
                     const staticBlock = b.staticBlock([b.expressionStatement(templateExpr)]);
@@ -168,6 +170,7 @@ type Replacement = {
     original: {
         loc: Required<b.SourceLocation>,
         range: [number, number],
+        contentRange: [number, number],
     };
     replaced: {
         range: [number, number]
@@ -234,12 +237,13 @@ export function transform(options: PreprocessOptions) {
             replacements.push({
                 original: {
                     loc: node.loc!,
-                    range: node.range!
+                    range: node.range!,
+                    contentRange: node.contentNode.range!,
                 },
                 replaced: { range }
             });
         });
-        return { output, replacements }
+        return { output, replacements, templateCallSpecifier: ((ast as any).program as any).templateCallSpecifier }
     }
 
     return { output: result?.code, map: result?.map }

@@ -46,7 +46,7 @@ describe("transform", function () {
       const template = '';
       <template>Hello \`world\`!</template>
       
-      const template1 = '';
+      const template1 = <template>Hello \`world\`!</template>;
       const x = {
           b: <template>Hello \`world\`!</template>
       }
@@ -68,24 +68,24 @@ describe("transform", function () {
       includeSourceMaps: false,
     });
 
-    expect(templates.output!.split('\n').length === input.split('\n').length);
+    expect(templates.output!.split("\n").length === input.split("\n").length);
 
     expect(templates.output).toMatchInlineSnapshot(`
       "
             const template = '';
-            template(\`Hello \`world\`!\`,{moduleName:"foo.gjs",scope:instance=>({})})
+            \`Hello \`world\`!\`
             
-            const template1 = '';
+            const template1 = \`Hello \`world\`!\`;
             const x = {
-                b: template(\`Hello \`world\`!\`,{moduleName:"foo.gjs",scope:instance=>({})})
+                b: \`Hello \`world\`!\`
             }
             
             class X {
                 x: string;
                 
-                static{template(\`
+                static{\`
                   <div>Hello \`world\`!</div>          
-                \`,{component:this,moduleName:"foo.gjs",scope:instance=>({})});}
+                \`;}
             }
           "
     `);
