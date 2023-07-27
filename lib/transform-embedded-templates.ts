@@ -186,7 +186,23 @@ function replaceRange(
     return s.substring(0, start) + substitute + s.substring(end);
 }
 
+export function transformForLint(options: PreprocessOptions) {
+    options.linterMode = true;
+    options.templateTag = options.templateTag || DEFAULT_PARSE_TEMPLATES_OPTIONS.templateTag;
+    let { output, replacements, templateCallSpecifier } = doTransform(options);
+    replacements = replacements || [];
+    templateCallSpecifier = templateCallSpecifier || options.templateTag;
+    return { output, replacements, templateCallSpecifier }
+}
+
 export function transform(options: PreprocessOptions) {
+    options.templateTag = options.templateTag || DEFAULT_PARSE_TEMPLATES_OPTIONS.templateTag;
+    const { output, map } = doTransform(options);
+    return { output, map };
+
+}
+
+export function doTransform(options: PreprocessOptions) {
 
     const plugins = (['decorators', 'typescript', 'classProperties', 'classStaticBlock', 'classPrivateProperties'] as ParserPlugin[]).concat(options.babelPlugins || []);
     let ast = options.ast;
@@ -194,7 +210,7 @@ export function transform(options: PreprocessOptions) {
         ast = parse(options.input, {
             ranges: true,
             tokens: true,
-            templateTag: options.templateTag || DEFAULT_PARSE_TEMPLATES_OPTIONS.templateTag,
+            templateTag: options.templateTag,
             plugins: plugins,
             allowImportExportEverywhere: true,
             errorRecovery: true,
