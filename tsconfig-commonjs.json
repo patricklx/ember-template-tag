@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "target": "es2016",
+    "module": "commonjs",
+    "rootDir": ".",
+    "outDir": "dist/commonjs",
+    "moduleResolution": "node",
+    "declaration": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "typeRoots": [
+      "local-types"
+    ],
+    "types": [
+      "global"
+    ]
+  },
+  "include": [
+    "lib/*.ts",
+  ],
+}

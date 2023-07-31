@@ -1,5 +1,7 @@
 *
 !package.json
+!tsconfig-commonjs.json
+!tsconfig-esm.json
 !tsconfig.json
 !lib
 !lib/*

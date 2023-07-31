@@ -1,4 +1,4 @@
 *
 !package.json
-!lib/*.js
-!lib/*.d.ts
+!dist/**/*.js
+!dist/**/*.d.ts

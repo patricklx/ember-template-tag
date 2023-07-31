@@ -1,13 +1,12 @@
 import parse, { EmberNode } from './template-parser';
 import { DEFAULT_PARSE_TEMPLATES_OPTIONS } from './parse-templates';
-import { PluginOptions, PluginTarget, transformFromAstSync } from '@babel/core';
+import { PluginTarget, transformFromAstSync } from '@babel/core';
 import * as b from '@babel/types';
 import { ParserPlugin } from '@babel/parser';
 import { NodePath } from '@babel/traverse';
 import { default as generate } from '@babel/generator';
 import { getTemplateLocals } from '@glimmer/syntax';
 import * as glimmer from '@glimmer/syntax';
-import { SourceLocation } from '@babel/types';
 
 type TransformOptions = {
     getTemplateLocals: typeof getTemplateLocals,

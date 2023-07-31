@@ -96,18 +96,13 @@ export function parseTemplates(
     relativePath: string,
     options: ParseTemplatesOptions = DEFAULT_PARSE_TEMPLATES_OPTIONS
 ) {
-  const results: TemplateMatch[] = [];
-  const templateTag = options?.templateTag;
-
-  const ast = parse(template);
-
-  return parseTemplatesFromAst(ast, relativePath, options);
+  options.templateTag = options.templateTag || TEMPLATE_TAG_NAME;
+  const ast = parse(template, options);
+  return parseTemplatesFromAst(ast);
 }
 
 export function parseTemplatesFromAst(
-    ast: b.Node,
-    relativePath: string,
-    options: ParseTemplatesOptions = DEFAULT_PARSE_TEMPLATES_OPTIONS
+    ast: b.Node
 ) {
   const results: TemplateMatch[] = [];
 

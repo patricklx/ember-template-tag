@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "incremental": true,
+    "target": "ES2016",
+    "module": "ES6",
+    "rootDir": "./lib",
+    "outDir": "dist/esm",
+    "moduleResolution": "node",
+    "declaration": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "typeRoots": [
+      "local-types"
+    ],
+    "types": [
+      "global"
+    ]
+  },
+  "include": [
+    "lib/*.ts"
+  ],
+}
