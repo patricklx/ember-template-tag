@@ -8,10 +8,9 @@
     "moduleResolution": "node",
     "declaration": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
     "strict": true,
     "typeRoots": [
-      "local-types"
+      "./local-types"
     ],
     "types": [
       "global"

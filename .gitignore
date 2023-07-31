@@ -5,7 +5,7 @@
 !tsconfig.json
 !lib
 !lib/*
-!local-types
+!local-types/*
 !.npmignore
 !pnpm-lock.yaml
 !__tests__

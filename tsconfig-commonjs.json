@@ -3,20 +3,20 @@
     "incremental": true,
     "target": "es2016",
     "module": "commonjs",
-    "rootDir": ".",
+    "rootDir": "./lib",
     "outDir": "dist/commonjs",
     "moduleResolution": "node",
     "declaration": true,
     "esModuleInterop": true,
     "strict": true,
     "typeRoots": [
-      "local-types"
+      "./local-types"
     ],
     "types": [
       "global"
     ]
   },
   "include": [
-    "lib/*.ts",
+    "lib/*.ts"
   ],
 }
