@@ -122,9 +122,8 @@ export function getParser(superclass = Parser) {
             return null;
         }
 
-        isAlphaNumeric(code: number) {
-            if (!(code > 47 && code < 58) && // numeric (0-9)
-                !(code > 64 && code < 91) && // upper alpha (A-Z)
+        isAlpha(code: number) {
+            if (!(code > 64 && code < 91) && // upper alpha (A-Z)
                 !(code > 96 && code < 123)) { // lower alpha (a-z)
                 return false;
             }
@@ -133,7 +132,7 @@ export function getParser(superclass = Parser) {
 
         getTokenFromCode(code: number) {
             if (this.isInsideTemplate) {
-                if (!this.isAlphaNumeric(code)) {
+                if (!this.isAlpha(code)) {
                     ++this.state.pos;
                     this.finishToken(code.toString(), String.fromCharCode(code));
                     return
