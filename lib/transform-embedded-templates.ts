@@ -95,37 +95,46 @@ function ensureImport(path: NodePath<EmberNode>, options: TransformOptions) {
     if (options.linterMode) {
         return templateCallSpecifier
     }
-    let counter = path.state.templateCallSpecifierCounter || 1;
-    while (path.scope.hasBinding(templateCallSpecifier)) {
-        templateCallSpecifier = 'template' + counter;
-        counter++;
-    }
-    if (path.state.addedImport && templateCallSpecifier !== path.state.templateCallSpecifier) {
-        path.state.addedImport.name = templateCallSpecifier;
-        path.state.calls.forEach((c: any) => {
-            c.name = templateCallSpecifier;
-        });
-    }
+
     const id = b.identifier(templateCallSpecifier);
     const imp = b.importDeclaration([b.importSpecifier(id, b.identifier('template'))], b.stringLiteral('@ember/template-compiler'));
     if (!path.state.addedImport) {
         path.state.addedImport = id;
         (path.state.program as NodePath<b.Program>).node.body.splice(0, 0, imp);
     }
-    path.state.templateCallSpecifier = templateCallSpecifier;
-    path.state.templateCallSpecifierCounter = counter;
-    (path.state.program.node as any).templateCallSpecifier = path.state.templateCallSpecifier;
-    return path.state.templateCallSpecifier;
+    return templateCallSpecifier;
 }
 
 const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions) => {
     return {
         name: 'TemplateTransform',
         visitor: {
-            Program(path: NodePath<b.Program>) {
-                path.state = {};
-                path.state.program = path;
-                path.state.calls = [];
+            Program: {
+                enter(path: NodePath<b.Program>) {
+                    path.state = {};
+                    path.state.program = path;
+                    path.state.calls = [];
+                    path.state.identifiers = new Set();
+                },
+                exit(path: NodePath<b.Program>) {
+                    let counter = 1;
+                    let templateCallSpecifier = 'template';
+                    while(path.state.identifiers.has(templateCallSpecifier)) {
+                        templateCallSpecifier = `template${counter}`;
+                        counter += 1;
+                    }
+                    path.state.calls.forEach((c: any) => {
+                        c.name = templateCallSpecifier;
+                    });
+                    (path.state.program.node as any).templateCallSpecifier = path.state.templateCallSpecifier;
+                    if (path.state.addedImport) {
+                        path.state.addedImport.name = templateCallSpecifier;
+                    }
+                }
+            },
+            Identifier(path: NodePath<b.Identifier>) {
+                if (path.state.calls.some((c: b.Identifier) => c === path.node)) return;
+                path.state.identifiers.add(path.node.name);
             },
             // @ts-ignore
             EmberTemplate(path: NodePath<EmberNode>, pluginPass) {
