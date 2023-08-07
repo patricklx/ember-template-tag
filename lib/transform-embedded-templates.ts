@@ -48,12 +48,18 @@ function buildEval() {
 
 function buildTemplateCall(identifier: string,path: NodePath<EmberNode>, options: TransformOptions) {
     let content = path.node.contentNode.quasis[0].value.raw;
-    if ('trim' in path.node.tagProperties) {
-        content = content.trim();
-    }
+    if (!options.linterMode) {
+        if ('trim' in path.node.tagProperties) {
+            content = content.trim();
+        }
 
-    if ('minify' in path.node.tagProperties) {
-        content = minify(content);
+        if ('minify' in path.node.tagProperties) {
+            content = minify(content);
+        }
+    } else {
+        const startLen = path.node.startRange[1] - path.node.startRange[0];
+        const endLen = path.node.endRange[1] - path.node.endRange[0];
+        content = ' '.repeat(startLen) + content + ' '.repeat(endLen);
     }
     const templateLiteral = b.templateLiteral([b.templateElement({ raw: '' })], []);
     templateLiteral.quasis[0].loc = path.node.contentNode.loc;

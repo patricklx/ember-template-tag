@@ -73,19 +73,19 @@ describe("transform", function () {
     expect(templates.output).toMatchInlineSnapshot(`
       "
             const template = '';
-            \`Hello \`world\`!\`
+            \`          Hello \`world\`!           \`
             
-            const template1 = \`Hello \`world\`!\`;
+            const template1 = \`          Hello \`world\`!           \`;
             const x = {
-                b: \`Hello \`world\`!\`
+                b: \`          Hello \`world\`!           \`
             }
             
             class X {
                 x: string;
                 
-                static{\`
+                static{\`          
                   <div>Hello \`world\`!</div>          
-                \`;}
+                           \`;}
             }
           "
     `);
