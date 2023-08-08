@@ -59,7 +59,7 @@ function buildTemplateCall(identifier: string,path: NodePath<EmberNode>, options
     } else {
         const startLen = path.node.startRange[1] - path.node.startRange[0];
         const endLen = path.node.endRange[1] - path.node.endRange[0];
-        content = ' '.repeat(startLen) + content + ' '.repeat(endLen);
+        content = ' '.repeat(startLen - 1) + content + ' '.repeat(endLen - 1);
     }
     const templateLiteral = b.templateLiteral([b.templateElement({ raw: '' })], []);
     templateLiteral.quasis[0].loc = path.node.contentNode.loc;
@@ -148,6 +148,11 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
                 if (path.parent?.type === 'ClassBody') {
                     const templateExpr = buildTemplateCall(specifier, path, options);
                     templateExpr.loc = path.node.loc;
+                    if (options.linterMode) {
+                        const staticCallLen = 9; // 'static{;}'.length;
+                        const content = (templateExpr as b.TemplateLiteral).quasis[0].value.raw;
+                        (templateExpr as b.TemplateLiteral).quasis[0].value.raw = content.slice(4, -5);
+                    }
                     const staticBlock = b.staticBlock([b.expressionStatement(templateExpr)]);
                     (path.node as any).replacedWith = staticBlock;
                     path.replaceWith(staticBlock);
@@ -255,7 +260,7 @@ export function doTransform(options: PreprocessOptions) {
         let output = options.input;
         const replacements: Replacement[] = [];
         (ast?.extra?.detectedTemplateNodes as EmberNode[]).reverse().forEach((node: EmberNode) => {
-            const code = generate((node as any).replacedWith, { compact: true }).code;
+            const code = generate((node as any).replacedWith, { compact: true, comments: false }).code;
             output = replaceRange(output, node.start!!, node.end!!, code);
             const end = node.start! + code.length;
             const range = [node.start, end] as [number, number];
