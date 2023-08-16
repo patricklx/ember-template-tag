@@ -151,7 +151,7 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
                     if (options.linterMode) {
                         const staticCallLen = 9; // 'static{;}'.length;
                         const content = (templateExpr as b.TemplateLiteral).quasis[0].value.raw;
-                        (templateExpr as b.TemplateLiteral).quasis[0].value.raw = content.slice(4, -5);
+                        (templateExpr as b.TemplateLiteral).quasis[0].value.raw = content.slice(7, -2);
                     }
                     const staticBlock = b.staticBlock([b.expressionStatement(templateExpr)]);
                     (path.node as any).replacedWith = staticBlock;

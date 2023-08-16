@@ -85,9 +85,9 @@ describe("transform", function () {
             class X {
                 x: string;
                 
-                static{\`     
+                static{\`  
                   <div>Hello \`world\`!</div>          
-                     \`;}
+                        \`;}
             }
           "
     `);
