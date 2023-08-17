@@ -1,6 +1,6 @@
 {
   "name": "ember-template-tag",
-  "version": "2.3.2",
+  "version": "2.3.3",
   "description": "",
   "main": "dist/commonjs/index.js",
   "module": "dist/esm/index.js",
@@ -23,9 +23,9 @@
     "url": "https://github.com/patricklx/ember-template-tag"
   },
   "dependencies": {
-    "@babel/core": "^7.22.9",
+    "@babel/core": "^7.22.10",
     "@babel/generator": "^7.22.9",
-    "@babel/parser": "7.22.7",
+    "@babel/parser": "^7.22.10",
     "@babel/standalone": "^7.22.9",
     "@babel/traverse": "^7.22.8",
     "@glimmer/syntax": "^0.84.3"

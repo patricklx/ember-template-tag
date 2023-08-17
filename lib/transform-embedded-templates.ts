@@ -15,7 +15,7 @@ type TransformOptions = {
     moduleName: string;
 }
 
-b.TYPES.push('EmberTemplate');
+require(require.resolve('@babel/types', { paths: [require.resolve('@babel/core')] })).TYPES.push('EmberTemplate');
 
 function minify(htmlContent: string) {
     const ast = glimmer.preprocess(htmlContent, {mode: 'codemod'});
@@ -142,8 +142,7 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
                 if (path.state.calls.some((c: b.Identifier) => c === path.node)) return;
                 path.state.identifiers.add(path.node.name);
             },
-            // @ts-ignore
-            EmberTemplate(path: NodePath<EmberNode>, pluginPass) {
+            EmberTemplate(path: NodePath<EmberNode>) {
                 const specifier = ensureImport(path, options);
                 if (path.parent?.type === 'ClassBody') {
                     const templateExpr = buildTemplateCall(specifier, path, options);

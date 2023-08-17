@@ -70,7 +70,7 @@ export const DEFAULT_PARSE_TEMPLATES_OPTIONS = {
   templateTag: TEMPLATE_TAG_NAME
 };
 
-b.TYPES.push('EmberTemplate');
+require(require.resolve('@babel/types', { paths: [require.resolve('@babel/traverse')] })).TYPES.push('EmberTemplate');
 
 /**
  * Parses a template to find all possible valid matches for an embedded template.
