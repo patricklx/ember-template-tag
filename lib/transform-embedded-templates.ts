@@ -15,6 +15,7 @@ type TransformOptions = {
     moduleName: string;
 }
 
+// @ts-ignore
 require(require.resolve('@babel/types', { paths: [require.resolve('@babel/core')] })).TYPES.push('EmberTemplate');
 
 function minify(htmlContent: string) {

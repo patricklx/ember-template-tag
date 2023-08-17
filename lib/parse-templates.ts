@@ -70,6 +70,7 @@ export const DEFAULT_PARSE_TEMPLATES_OPTIONS = {
   templateTag: TEMPLATE_TAG_NAME
 };
 
+// @ts-ignore
 require(require.resolve('@babel/types', { paths: [require.resolve('@babel/traverse')] })).TYPES.push('EmberTemplate');
 
 /**
