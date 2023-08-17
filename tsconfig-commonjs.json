@@ -8,15 +8,10 @@
     "moduleResolution": "node",
     "declaration": true,
     "esModuleInterop": true,
-    "strict": true,
-    "typeRoots": [
-      "./local-types"
-    ],
-    "types": [
-      "global"
-    ]
+    "strict": true
   },
   "include": [
+    "local-types/global.d.ts",
     "lib/*.ts"
   ],
 }

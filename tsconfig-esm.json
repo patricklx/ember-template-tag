@@ -9,14 +9,9 @@
     "declaration": true,
     "esModuleInterop": true,
     "strict": true,
-    "typeRoots": [
-      "./local-types"
-    ],
-    "types": [
-      "global"
-    ]
   },
   "include": [
+    "local-types/global.d.ts",
     "lib/*.ts"
   ],
 }

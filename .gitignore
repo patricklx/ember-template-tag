@@ -11,3 +11,4 @@
 !pnpm-lock.yaml
 !__tests__
 !*.js
+!CHANGELOG.md

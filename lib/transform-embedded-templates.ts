@@ -7,12 +7,18 @@ import { NodePath } from '@babel/traverse';
 import { default as generate } from '@babel/generator';
 import { getTemplateLocals } from '@glimmer/syntax';
 import * as glimmer from '@glimmer/syntax';
+import Module from 'module';
 
 type TransformOptions = {
     getTemplateLocals: typeof getTemplateLocals,
     explicit: boolean;
     linterMode: boolean;
     moduleName: string;
+}
+
+if (typeof require === 'undefined') {
+    // @ts-ignore
+    require = Module.createRequire(import.meta.url);
 }
 
 // @ts-ignore
