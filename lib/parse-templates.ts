@@ -73,7 +73,7 @@ export const DEFAULT_PARSE_TEMPLATES_OPTIONS = {
 
 if (typeof require === 'undefined') {
   // @ts-ignore
-  require = Module.createRequire(import.meta.url);
+  require = eval('Module.createRequire(import.meta.url)');
 }
 
 // @ts-ignore

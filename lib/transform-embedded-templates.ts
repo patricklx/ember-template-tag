@@ -18,7 +18,7 @@ type TransformOptions = {
 
 if (typeof require === 'undefined') {
     // @ts-ignore
-    require = Module.createRequire(import.meta.url);
+    require = eval('Module.createRequire(import.meta.url)');
 }
 
 // @ts-ignore
