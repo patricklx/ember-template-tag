@@ -44,8 +44,12 @@ if (typeof require === 'undefined') {
     require = Module.createRequire(import.meta.url);
 }
 
-// @ts-ignore
-require(require.resolve('@babel/types', { paths: [require.resolve('@babel/core')] })).TYPES.push('EmberTemplate');
+try {
+    require(require.resolve('@babel/types', { paths: [require.resolve('@babel/core')] })).TYPES.push('EmberTemplate');
+} catch (e) {
+    require('@babel/types').TYPES.push('EmberTemplate');
+}
+
 
 function minify(htmlContent: string) {
     const ast = preprocess(htmlContent, {mode: 'codemod'});

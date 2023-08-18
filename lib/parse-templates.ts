@@ -76,8 +76,12 @@ if (typeof require === 'undefined') {
   require = Module.createRequire(import.meta.url);
 }
 
-// @ts-ignore
-require(require.resolve('@babel/types', { paths: [require.resolve('@babel/traverse')] })).TYPES.push('EmberTemplate');
+try {
+  require(require.resolve('@babel/types', { paths: [require.resolve('@babel/traverse')] })).TYPES.push('EmberTemplate');
+} catch (e) {
+  require('@babel/types').TYPES.push('EmberTemplate');
+}
+
 
 /**
  * Parses a template to find all possible valid matches for an embedded template.

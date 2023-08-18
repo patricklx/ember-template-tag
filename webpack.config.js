@@ -1,4 +1,5 @@
 const TerserPlugin = require("terser-webpack-plugin");
+const webpack = require("webpack");
 const base = {
     target: 'web',
     mode: 'production',
@@ -16,12 +17,23 @@ const base = {
         extensions: ['.tsx', '.ts', '.js'],
         fallback: {
             assert: require.resolve('assert'),
+            buffer: require.resolve('buffer'),
+            '@babel/types': require.resolve('@babel/types'),
             fs: false,
             path: false,
             module: false,
             net: false
         }
     },
+    plugins: [
+        // fix "process is not defined" error:
+        new webpack.ProvidePlugin({
+            process: 'process/browser',
+        }),
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+        }),
+    ],
     experiments: {
         outputModule: true
     },

@@ -69,7 +69,7 @@ export function getParser(superclass = Parser) {
                 openTemplates += 1;
                 node.startRange = [this.state.pos - 1, this.state.pos];
                 let value = this.state.value;
-                while (value !== '>') {
+                while (value !== '>' && value !== undefined) {
                     this.next();
                     value = this.state.value;
                 }
@@ -82,7 +82,7 @@ export function getParser(superclass = Parser) {
                 contentRange[0] = this.state.pos;
                 this.next();
                 const contentNode = this.startNode() as TemplateLiteral;
-                while (openTemplates) {
+                while (openTemplates && this.state.value !== undefined) {
                     if (
                         this.state.value === '<' &&
                         this.input.slice(this.state.pos).startsWith(templateTag)
@@ -104,7 +104,7 @@ export function getParser(superclass = Parser) {
                             contentNode.quasis = [templateElement({ raw: '' }, true)];
                             contentNode.quasis[0].value.raw = content;
                             contentNode.quasis[0].value.cooked = content;
-                            while (value !== '>') {
+                            while (value !== '>' && value !== undefined) {
                                 this.next();
                                 value = this.state.value;
                             }

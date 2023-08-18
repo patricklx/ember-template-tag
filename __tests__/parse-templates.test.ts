@@ -1,17 +1,20 @@
-import {
-  DEFAULT_PARSE_TEMPLATES_OPTIONS,
-  parseTemplates,
-} from "../lib/parse-templates";
+import { parseTemplates } from '../lib';
 
 describe("parseTemplates", function () {
-  /*
-      This is just to make snapshot testing a bit easier, since the real `parseTemplates`
-      returns `RegExpMatchArray` instances as `start`/`end` the snapshots only display a
-      small number of the fields that are available.
+  it("<template><template>", function () {
+    const input = `<template><template>`;
 
-      This transforms the `start`/`end` properties into simpler objects with the properties that
-      most consumers will be using, so that we can test the function easier.
-    */
+    let error = null;
+    try {
+      parseTemplates(input, "foo.gjs");
+    } catch (e) {
+      error = e;
+    }
+
+    expect(error).toMatchInlineSnapshot(
+      `[SyntaxError: Unexpected token (1:20)]`
+    );
+  });
 
   it("<template><template>", function () {
     const input = `<template>Hello!</template>`;
