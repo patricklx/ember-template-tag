@@ -1,3 +1,4 @@
+const TerserPlugin = require("terser-webpack-plugin");
 const base = {
     target: 'web',
     mode: 'production',
@@ -27,7 +28,29 @@ const base = {
     optimization: {
         usedExports: true,
         innerGraph: true,
-        minimize: true
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    ecma: undefined,
+                    parse: {},
+                    compress: {
+                        hoist_funs: true
+                    },
+                    mangle: true, // Note `mangle.properties` is `false` by default.
+                    module: false,
+                    // Deprecated
+                    output: null,
+                    format: null,
+                    toplevel: false,
+                    nameCache: null,
+                    ie8: false,
+                    keep_classnames: undefined,
+                    keep_fnames: false,
+                    safari10: false,
+                },
+            })
+        ]
     },
 };
 

@@ -1,12 +1,35 @@
 import parse, { EmberNode } from './template-parser';
 import { DEFAULT_PARSE_TEMPLATES_OPTIONS } from './parse-templates';
 import { PluginTarget, transformFromAstSync } from '@babel/core';
-import * as b from '@babel/types';
+import {
+    arrowFunctionExpression,
+    blockStatement,
+    callExpression,
+    exportDefaultDeclaration,
+    expressionStatement,
+    Identifier,
+    identifier,
+    importDeclaration,
+    importSpecifier,
+    memberExpression,
+    numericLiteral,
+    ObjectExpression,
+    objectExpression,
+    objectMethod,
+    objectProperty,
+    Program,
+    returnStatement,
+    SourceLocation, staticBlock,
+    stringLiteral,
+    templateElement,
+    templateLiteral,
+    TemplateLiteral
+} from '@babel/types';
 import { ParserPlugin } from '@babel/parser';
 import { NodePath } from '@babel/traverse';
 import { default as generate } from '@babel/generator';
 import { getTemplateLocals } from '@glimmer/syntax';
-import * as glimmer from '@glimmer/syntax';
+import { preprocess, traverse, print } from '@glimmer/syntax';
 import Module from 'module';
 
 type TransformOptions = {
@@ -18,20 +41,20 @@ type TransformOptions = {
 
 if (typeof require === 'undefined') {
     // @ts-ignore
-    require = eval('Module.createRequire(import.meta.url)');
+    require = Module.createRequire(import.meta.url);
 }
 
 // @ts-ignore
 require(require.resolve('@babel/types', { paths: [require.resolve('@babel/core')] })).TYPES.push('EmberTemplate');
 
 function minify(htmlContent: string) {
-    const ast = glimmer.preprocess(htmlContent, {mode: 'codemod'});
-    glimmer.traverse(ast, {
+    const ast = preprocess(htmlContent, {mode: 'codemod'});
+    traverse(ast, {
         TextNode(node) {
             node.chars = node.chars.replace(/ {2,}/g, ' ').replace(/[\r\n\t\f\v]/g, '');
         }
     });
-    return glimmer.print(ast);
+    return print(ast);
 }
 
 function buildScope(path: NodePath<EmberNode>, options: TransformOptions) {
@@ -41,19 +64,19 @@ function buildScope(path: NodePath<EmberNode>, options: TransformOptions) {
     const all = [...locals, ...templateTags];
     const properties = all.map(l => {
         const id = l.split('.')[0];
-        return b.objectProperty(b.identifier(id), b.identifier(id), false, true);
+        return objectProperty(identifier(id), identifier(id), false, true);
     })
-    const arrow = b.arrowFunctionExpression([b.identifier('instance')], b.objectExpression(properties));
-    return b.objectProperty(b.identifier('scope'), arrow);
+    const arrow = arrowFunctionExpression([identifier('instance')], objectExpression(properties));
+    return objectProperty(identifier('scope'), arrow);
 }
 
 function buildEval() {
-    return  b.objectMethod('method', b.identifier('eval'), [], b.blockStatement([
-        b.returnStatement(b.callExpression(b.identifier('eval'), [b.memberExpression(b.identifier('arguments'), b.numericLiteral(0), true)]))
+    return  objectMethod('method', identifier('eval'), [], blockStatement([
+        returnStatement(callExpression(identifier('eval'), [memberExpression(identifier('arguments'), numericLiteral(0), true)]))
     ]));
 }
 
-function buildTemplateCall(identifier: string,path: NodePath<EmberNode>, options: TransformOptions) {
+function buildTemplateCall(id: string,path: NodePath<EmberNode>, options: TransformOptions) {
     let content = path.node.contentNode.quasis[0].value.raw;
     if (!options.linterMode) {
         if ('trim' in path.node.tagProperties) {
@@ -68,36 +91,36 @@ function buildTemplateCall(identifier: string,path: NodePath<EmberNode>, options
         const endLen = path.node.endRange[1] - path.node.endRange[0];
         content = ' '.repeat(startLen - 1) + content + ' '.repeat(endLen - 1);
     }
-    const templateLiteral = b.templateLiteral([b.templateElement({ raw: '' })], []);
-    templateLiteral.quasis[0].loc = path.node.contentNode.loc;
-    templateLiteral.quasis[0].value.raw = content;
-    templateLiteral.quasis[0].value.cooked = content;
+    const literal = templateLiteral([templateElement({ raw: '' })], []);
+    literal.quasis[0].loc = path.node.contentNode.loc;
+    literal.quasis[0].value.raw = content;
+    literal.quasis[0].value.cooked = content;
 
     if (options.linterMode) {
-        return templateLiteral;
+        return literal;
     }
-    let optionsExpression: b.ObjectExpression;
+    let optionsExpression: ObjectExpression;
     const explicit = options.explicit;
     const property = explicit ? buildScope(path, options) : buildEval();
     const isInClass = path.parent?.type === 'ClassBody';
     if (isInClass) {
-        optionsExpression = b.objectExpression([
-            b.objectProperty(b.identifier('component'), b.identifier('this')),
-            b.objectProperty(b.identifier('moduleName'), b.stringLiteral(options.moduleName)),
+        optionsExpression = objectExpression([
+            objectProperty(identifier('component'), identifier('this')),
+            objectProperty(identifier('moduleName'), stringLiteral(options.moduleName)),
             property
         ]);
     } else {
-        optionsExpression = b.objectExpression([
-            b.objectProperty(b.identifier('moduleName'), b.stringLiteral(options.moduleName)),
+        optionsExpression = objectExpression([
+            objectProperty(identifier('moduleName'), stringLiteral(options.moduleName)),
             property
         ])
     }
-    const callId = b.identifier(identifier);
+    const callId = identifier(id);
     path.state.calls.push(callId);
-    return b.callExpression(
+    return callExpression(
         callId,
         [
-            templateLiteral,
+            literal,
             optionsExpression
         ]
     )
@@ -109,11 +132,11 @@ function ensureImport(path: NodePath<EmberNode>, options: TransformOptions) {
         return templateCallSpecifier
     }
 
-    const id = b.identifier(templateCallSpecifier);
-    const imp = b.importDeclaration([b.importSpecifier(id, b.identifier('template'))], b.stringLiteral('@ember/template-compiler'));
+    const id = identifier(templateCallSpecifier);
+    const imp = importDeclaration([importSpecifier(id, identifier('template'))], stringLiteral('@ember/template-compiler'));
     if (!path.state.addedImport) {
         path.state.addedImport = id;
-        (path.state.program as NodePath<b.Program>).node.body.splice(0, 0, imp);
+        (path.state.program as NodePath<Program>).node.body.splice(0, 0, imp);
     }
     return templateCallSpecifier;
 }
@@ -123,13 +146,13 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
         name: 'TemplateTransform',
         visitor: {
             Program: {
-                enter(path: NodePath<b.Program>) {
+                enter(path: NodePath<Program>) {
                     path.state = {};
                     path.state.program = path;
                     path.state.calls = [];
                     path.state.identifiers = new Set();
                 },
-                exit(path: NodePath<b.Program>) {
+                exit(path: NodePath<Program>) {
                     let counter = 1;
                     let templateCallSpecifier = 'template';
                     while(path.state.identifiers.has(templateCallSpecifier)) {
@@ -145,8 +168,8 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
                     }
                 }
             },
-            Identifier(path: NodePath<b.Identifier>) {
-                if (path.state.calls.some((c: b.Identifier) => c === path.node)) return;
+            Identifier(path: NodePath<Identifier>) {
+                if (path.state.calls.some((c: Identifier) => c === path.node)) return;
                 path.state.identifiers.add(path.node.name);
             },
             EmberTemplate(path: NodePath<EmberNode>) {
@@ -156,17 +179,17 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
                     templateExpr.loc = path.node.loc;
                     if (options.linterMode) {
                         const staticCallLen = 9; // 'static{;}'.length;
-                        const content = (templateExpr as b.TemplateLiteral).quasis[0].value.raw;
-                        (templateExpr as b.TemplateLiteral).quasis[0].value.raw = content.slice(7, -2);
+                        const content = (templateExpr as TemplateLiteral).quasis[0].value.raw;
+                        (templateExpr as TemplateLiteral).quasis[0].value.raw = content.slice(7, -2);
                     }
-                    const staticBlock = b.staticBlock([b.expressionStatement(templateExpr)]);
-                    (path.node as any).replacedWith = staticBlock;
-                    path.replaceWith(staticBlock);
+                    const staticB = staticBlock([expressionStatement(templateExpr)]);
+                    (path.node as any).replacedWith = staticB;
+                    path.replaceWith(staticB);
                 } else {
                     const templateExpr = buildTemplateCall(specifier, path, options);
                     templateExpr.loc = path.node.loc;
                     if (path.parent.type === 'Program' && !options.linterMode) {
-                        const exportDefault = b.exportDefaultDeclaration(templateExpr);
+                        const exportDefault = exportDefaultDeclaration(templateExpr);
                         (path.node as any).replacedWith = exportDefault;
                         path.replaceWith(exportDefault)
                         return
@@ -180,7 +203,7 @@ const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions
 }
 
 type PreprocessOptions = {
-    ast?: b.Node;
+    ast?: Node;
     input: string;
     templateTag?: string;
     relativePath: string;
@@ -193,7 +216,7 @@ type PreprocessOptions = {
 
 type Replacement = {
     original: {
-        loc: Required<b.SourceLocation>,
+        loc: Required<SourceLocation>,
         range: [number, number],
         contentRange: [number, number],
     };
@@ -230,7 +253,7 @@ export function transform(options: PreprocessOptions) {
 export function doTransform(options: PreprocessOptions) {
 
     const plugins = (['decorators', 'typescript', 'classProperties', 'classStaticBlock', 'classPrivateProperties'] as ParserPlugin[]).concat(options.babelPlugins || []);
-    let ast = options.ast;
+    let ast = options.ast as any;
     if (!ast) {
         ast = parse(options.input, {
             ranges: true,

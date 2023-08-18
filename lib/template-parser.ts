@@ -1,5 +1,5 @@
 import Parser from '@babel/parser/lib/parser';
-import * as PluginUtils from '@babel/parser/lib/plugin-utils';
+import { mixinPlugins } from '@babel/parser/lib/plugin-utils';
 import {
     ClassBody,
     MemberExpression,
@@ -36,7 +36,7 @@ export default function parse(input: string, options?: Partial<ParserOptions> & 
 export function createParser(options: ParserOptions & { templateTag?: string }, input: string) {
     let cls = Parser
     options.plugins?.forEach((name) => {
-        cls = PluginUtils.mixinPlugins[name as string]?.(cls) || cls
+        cls = mixinPlugins[name as string]?.(cls) || cls
     });
     cls = getParser(cls);
     return new cls(options, input);

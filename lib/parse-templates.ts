@@ -1,7 +1,7 @@
 import traverse, { NodePath } from '@babel/traverse';
 import { TEMPLATE_TAG_NAME, } from './util';
 import parse, { EmberNode } from './template-parser';
-import * as b from '@babel/types';
+import { Node } from '@babel/types';
 import Module from 'module';
 
 export type TemplateMatch = TemplateTagMatch | TemplateLiteralMatch;
@@ -73,7 +73,7 @@ export const DEFAULT_PARSE_TEMPLATES_OPTIONS = {
 
 if (typeof require === 'undefined') {
   // @ts-ignore
-  require = eval('Module.createRequire(import.meta.url)');
+  require = Module.createRequire(import.meta.url);
 }
 
 // @ts-ignore
@@ -109,7 +109,7 @@ export function parseTemplates(
 }
 
 export function parseTemplatesFromAst(
-    ast: b.Node
+    ast: Node
 ) {
   const results: TemplateMatch[] = [];
 
