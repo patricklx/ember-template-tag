@@ -4,7 +4,7 @@ instead of using ember-template-imports to find, parse & transform templates, th
 
 ```js
 const { parseTemplates, preprocessEmbeddedTemplates, transform } = require('ember-template-tag');
-const { TEMPLATE_TAG_NAME, TEMPLATE_LITERAL_IDENTIFIER, TEMPLATE_LITERAL_MODULE_SPECIFIER } = require('ember-template-preprocessor');
+const { TEMPLATE_TAG_NAME, TEMPLATE_LITERAL_IDENTIFIER, TEMPLATE_LITERAL_MODULE_SPECIFIER } = require('ember-template-tag');
 ```
 
 the output of parseTemplates is
