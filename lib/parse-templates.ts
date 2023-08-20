@@ -2,7 +2,9 @@ import traverse, { NodePath } from '@babel/traverse';
 import { TEMPLATE_TAG_NAME, } from './util';
 import parse, { EmberNode } from './template-parser';
 import { Node } from '@babel/types';
-import Module from 'module';
+import { TYPES } from '@babel/types';
+
+TYPES.push('EmberTemplate');
 
 export type TemplateMatch = TemplateTagMatch | TemplateLiteralMatch;
 
@@ -74,12 +76,6 @@ export const DEFAULT_PARSE_TEMPLATES_OPTIONS = {
 if (typeof require === 'undefined') {
   // @ts-ignore
   require = Module.createRequire(import.meta.url);
-}
-
-try {
-  require(require.resolve('@babel/types', { paths: [require.resolve('@babel/traverse')] })).TYPES.push('EmberTemplate');
-} catch (e) {
-  require('@babel/types').TYPES.push('EmberTemplate');
 }
 
 
