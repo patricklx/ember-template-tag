@@ -1,12 +1,12 @@
 {
   "name": "ember-template-tag",
-  "version": "2.3.4",
+  "version": "2.3.5",
   "description": "",
   "main": "dist/commonjs/index.js",
   "module": "dist/esm/index.js",
   "scripts": {
     "test": "jest",
-    "build": "pnpm build:commonjs && pnpm build:esm",
+    "build": "pnpm build:commonjs && pnpm build:esm && build:webpack",
     "build:commonjs": "tsc -p tsconfig-commonjs.json",
     "build:esm": "tsc -p tsconfig-esm.json",
     "build:webpack": "webpack",
