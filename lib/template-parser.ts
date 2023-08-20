@@ -1,4 +1,6 @@
-import Parser as any from '@babel/parser/lib/parser';
+declare module '@babel/parser/lib/parser';
+
+import Parser from '@babel/parser/lib/parser';
 import { mixinPlugins } from '@babel/parser/lib/plugin-utils';
 import {
     ClassBody,
