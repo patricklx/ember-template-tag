@@ -70,6 +70,7 @@ module.exports = [{
     ...base,
     output: {
         filename: 'browser-esm.js',
+        path: path.resolve(__dirname),
         library: {
             type: 'module'
         }
@@ -78,6 +79,7 @@ module.exports = [{
     ...base,
     output: {
         filename: 'browser.js',
+        path: path.resolve(__dirname),
         library: {
             name: 'EmberTemplateTag',
             type: 'window'
@@ -87,6 +89,7 @@ module.exports = [{
     ...base,
     output: {
         filename: 'browser-amd.js',
+        path: path.resolve(__dirname),
         library: {
             name: 'EmberTemplateTag',
             type: 'amd'
