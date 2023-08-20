@@ -6,7 +6,7 @@
   "module": "dist/esm/index.js",
   "scripts": {
     "test": "jest",
-    "build": "pnpm build:commonjs && pnpm build:esm && build:webpack",
+    "build": "pnpm build:commonjs && pnpm build:esm && pnpm build:webpack",
     "build:commonjs": "tsc -p tsconfig-commonjs.json",
     "build:esm": "tsc -p tsconfig-esm.json",
     "build:webpack": "webpack",
