@@ -30,7 +30,9 @@ import { NodePath } from '@babel/traverse';
 import { default as generate } from '@babel/generator';
 import { getTemplateLocals } from '@glimmer/syntax';
 import { preprocess, traverse, print } from '@glimmer/syntax';
-import Module from 'module';
+import { TYPES } from '@babel/types';
+
+TYPES.push('EmberTemplate');
 
 type TransformOptions = {
     getTemplateLocals: typeof getTemplateLocals,
@@ -38,18 +40,6 @@ type TransformOptions = {
     linterMode: boolean;
     moduleName: string;
 }
-
-if (typeof require === 'undefined') {
-    // @ts-ignore
-    require = Module.createRequire(import.meta.url);
-}
-
-try {
-    require(require.resolve('@babel/types', { paths: [require.resolve('@babel/core')] })).TYPES.push('EmberTemplate');
-} catch (e) {
-    require('@babel/types').TYPES.push('EmberTemplate');
-}
-
 
 function minify(htmlContent: string) {
     const ast = preprocess(htmlContent, {mode: 'codemod'});
