@@ -1,0 +1,11 @@
+{
+  "type": "module",
+  "devDependencies": {
+    "@vitest/browser": "^0.34.2",
+    "vitest": "^0.34.2",
+    "playwright": "^1.37.1"
+  },
+  "dependencies": {
+    "vite": "^4.4.9"
+  }
+}

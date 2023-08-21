@@ -1,5 +1,8 @@
 ### CHANGELOG
 
+## 2.3.8
+* support browser
+
 ## v2.3.4
 * fix esm modules
 * fix browser build

@@ -2,4 +2,3 @@
 !package.json
 !dist/**/*.js
 !dist/**/*.d.ts
-!browser*.js

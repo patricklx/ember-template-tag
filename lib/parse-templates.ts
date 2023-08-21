@@ -73,11 +73,6 @@ export const DEFAULT_PARSE_TEMPLATES_OPTIONS = {
   templateTag: TEMPLATE_TAG_NAME
 };
 
-if (typeof require === 'undefined') {
-  // @ts-ignore
-  require = Module.createRequire(import.meta.url);
-}
-
 
 /**
  * Parses a template to find all possible valid matches for an embedded template.

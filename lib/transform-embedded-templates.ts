@@ -1,6 +1,5 @@
 import parse, { EmberNode } from './template-parser';
 import { DEFAULT_PARSE_TEMPLATES_OPTIONS } from './parse-templates';
-import { PluginTarget, transformFromAstSync } from '@babel/core';
 import {
     arrowFunctionExpression,
     blockStatement,
@@ -26,7 +25,7 @@ import {
     TemplateLiteral
 } from '@babel/types';
 import { ParserPlugin } from '@babel/parser';
-import { NodePath } from '@babel/traverse';
+import { NodePath, default as babelTraverse, visitors } from '@babel/traverse';
 import { default as generate } from '@babel/generator';
 import { getTemplateLocals } from '@glimmer/syntax';
 import { preprocess, traverse, print } from '@glimmer/syntax';
@@ -135,7 +134,7 @@ function ensureImport(path: NodePath<EmberNode>, options: TransformOptions) {
     return templateCallSpecifier;
 }
 
-const TemplateTransformPlugins: PluginTarget = (babel, options: TransformOptions) => {
+const TemplateTransformPlugins = (babel: any, options: TransformOptions) => {
     return {
         name: 'TemplateTransform',
         visitor: {
@@ -272,12 +271,8 @@ export function doTransform(options: PreprocessOptions) {
         linterMode: options.linterMode || false
     };
 
-    const result = transformFromAstSync(ast!, options.input, {
-        cloneInputAst: false,
-        retainLines: options.linterMode,
-        sourceMaps: options.includeSourceMaps === true ? 'both' : options.includeSourceMaps,
-        plugins: ([[TemplateTransformPlugins, pluginOptions]] as any[])
-    });
+    const visitor = TemplateTransformPlugins(null, pluginOptions);
+    babelTraverse(ast, visitor.visitor);
 
     if (options.linterMode) {
         let output = options.input;
@@ -302,7 +297,12 @@ export function doTransform(options: PreprocessOptions) {
             });
         });
         return { output, replacements, templateCallSpecifier: ((ast as any).program as any).templateCallSpecifier }
+    } else {
+        const result = generate(ast, { sourceMaps: !!options.includeSourceMaps, comments: true });
+        if (options.includeSourceMaps) {
+            result.code += '\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,';
+            result.code += btoa(JSON.stringify(result.map));
+        }
+        return { output: result?.code, map: result?.map }
     }
-
-    return { output: result?.code, map: result?.map }
 }

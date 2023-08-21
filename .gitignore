@@ -13,3 +13,6 @@
 !*.js
 !CHANGELOG.md
 !.babelrc
+!tests-browser/
+!tests-browser/**/*
+!tests-browser/node_modules
