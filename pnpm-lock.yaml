@@ -6,19 +6,19 @@ settings:
 
 dependencies:
   '@babel/generator':
-    specifier: ^7.22.10
+    specifier: 7.22.10
     version: 7.22.10
   '@babel/parser':
-    specifier: ^7.22.10
+    specifier: 7.22.10
     version: 7.22.10
   '@babel/standalone':
-    specifier: ^7.22.10
+    specifier: 7.22.10
     version: 7.22.10
   '@babel/traverse':
-    specifier: ^7.22.10
+    specifier: 7.22.10
     version: 7.22.10
   '@babel/types':
-    specifier: ^7.22.10
+    specifier: 7.22.10
     version: 7.22.10
   '@glimmer/syntax':
     specifier: ^0.84.3
