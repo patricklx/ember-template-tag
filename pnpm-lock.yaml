@@ -12,8 +12,8 @@ dependencies:
     specifier: 7.22.10
     version: 7.22.10
   '@babel/standalone':
-    specifier: 7.22.10
-    version: 7.22.10
+    specifier: 7.22.14
+    version: 7.22.14
   '@babel/traverse':
     specifier: 7.22.10
     version: 7.22.10
@@ -360,8 +360,8 @@ packages:
       '@babel/helper-plugin-utils': 7.22.5
     dev: true
 
-  /@babel/standalone@7.22.10:
-    resolution: {integrity: sha512-VmK2sWxUTfDDh9mPfCtFJPIehZToteqK+Zpwq8oJUjJ+WeeKIFTTQIrDzH7jEdom+cAaaguU7FI/FBsBWFkIeQ==}
+  /@babel/standalone@7.22.14:
+    resolution: {integrity: sha512-i61lDNe0nRm44nZj05g+1HNb0EVfDGaTI6PkoeUMUSel3GTG6T1OM3BdjZIXghnnFB8bSWbmfS1lkBQgNUdu5w==}
     engines: {node: '>=6.9.0'}
     dev: false
 
