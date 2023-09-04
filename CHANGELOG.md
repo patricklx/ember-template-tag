@@ -1,5 +1,8 @@
 ### CHANGELOG
 
+## 2.3.10
+* upgrade babel parser - use own copy and adapt exports
+
 ## 2.3.8
 * support browser
 

@@ -16,3 +16,5 @@
 !tests-browser/
 !tests-browser/**/*
 !tests-browser/node_modules
+!scripts
+!scripts/*
