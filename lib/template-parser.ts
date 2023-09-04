@@ -18,6 +18,27 @@ export type EmberNode = Node & {
     endRange: [number, number];
 };
 
+declare class MyParser {
+    input: string;
+    state: {
+        value: string;
+        pos: number;
+        lastTokEndLoc: any;
+    };
+
+    constructor(options: ParserOptions, input: string);
+
+    startNode(): Node;
+    finishNode(node: Node, type: string): Node;
+    finishNodeAt(node: Node, type: string, loc: any): Node;
+    finishToken(type: string, value: string): void;
+    next(): void;
+    parse(): Program;
+    parseStatementLike(...args: any): Node;
+    parseMaybeAssign(...args: any): Node;
+    getTokenFromCode(code: number): void;
+    parseClassMember(classBody: ClassBody, member: MemberExpression, state: any): Node;
+}
 
 export default function parse(input: string, options?: Partial<ParserOptions> & { templateTag?: string }) {
     const opts = Object.assign({
@@ -27,22 +48,22 @@ export default function parse(input: string, options?: Partial<ParserOptions> & 
         templateTag: TEMPLATE_TAG_NAME,
         plugins: ['typescript', 'decorators'],
     }, options)
-    const parser = createParser(opts, input);
+    const parser = createParser(opts, input) as unknown as MyParser;
     return parser.parse();
 }
 
 
 export function createParser(options: ParserOptions & { templateTag?: string }, input: string) {
-    let cls = Parser
+    let cls = Parser as unknown as typeof MyParser
     options.plugins?.forEach((name) => {
-        cls = mixinPlugins[name as string]?.(cls) || cls
+        cls = (mixinPlugins as any)[name as any]?.(cls) || cls
     });
     cls = getParser(cls);
     return new cls(options, input);
 }
 
 
-export function getParser(superclass = Parser) {
+export function getParser(superclass = Parser as unknown as typeof MyParser) {
     return class TemplateParser extends superclass {
         isInsideTemplate = false;
         templateTag?: string;
