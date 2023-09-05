@@ -24,7 +24,7 @@ import {
     templateLiteral,
     TemplateLiteral
 } from '@babel/types';
-import { ParserPlugin } from '@babel/parser';
+import type { ParserPlugin } from './babel-parser';
 import { NodePath, default as babelTraverse, visitors } from '@babel/traverse';
 import { default as generate } from '@babel/generator';
 import { getTemplateLocals } from '@glimmer/syntax';
