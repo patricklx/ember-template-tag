@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@babel/generator':
-    specifier: 7.22.10
-    version: 7.22.10
+    specifier: 7.22.15
+    version: 7.22.15
   '@babel/traverse':
     specifier: 7.22.11
     version: 7.22.11
@@ -99,7 +99,7 @@ packages:
     dependencies:
       '@ampproject/remapping': 2.2.1
       '@babel/code-frame': 7.22.10
-      '@babel/generator': 7.22.10
+      '@babel/generator': 7.22.15
       '@babel/helper-compilation-targets': 7.22.10
       '@babel/helper-module-transforms': 7.22.9(@babel/core@7.22.10)
       '@babel/helpers': 7.22.10
@@ -116,8 +116,8 @@ packages:
       - supports-color
     dev: true
 
-  /@babel/generator@7.22.10:
-    resolution: {integrity: sha512-79KIf7YiWjjdZ81JnLujDRApWtl7BxTqWD88+FFdQEIOG8LJ0etDOM7CXuIgGJa55sGOwZVwuEsaLEm0PJ5/+A==}
+  /@babel/generator@7.22.15:
+    resolution: {integrity: sha512-Zu9oWARBqeVOW0dZOjXc3JObrzuqothQ3y/n1kUtrjCoCPLkXUwMvOo/F/TCfoHMbWIFlWwpZtkZVb9ga4U2pA==}
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/types': 7.22.15
@@ -377,7 +377,7 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       '@babel/code-frame': 7.22.10
-      '@babel/generator': 7.22.10
+      '@babel/generator': 7.22.15
       '@babel/helper-environment-visitor': 7.22.5
       '@babel/helper-function-name': 7.22.5
       '@babel/helper-hoist-variables': 7.22.5
@@ -388,6 +388,14 @@ packages:
       globals: 11.12.0
     transitivePeerDependencies:
       - supports-color
+
+  /@babel/types@7.22.15:
+    resolution: {integrity: sha512-X+NLXr0N8XXmN5ZsaQdm9U2SSC3UbIYq/doL++sueHOTisgZHoKaQtZxGuV2cUPQHMfjKEfg/g6oy7Hm6SKFtA==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      '@babel/helper-string-parser': 7.22.5
+      '@babel/helper-validator-identifier': 7.22.15
+      to-fast-properties: 2.0.0
 
   /@babel/types@7.22.15:
     resolution: {integrity: sha512-X+NLXr0N8XXmN5ZsaQdm9U2SSC3UbIYq/doL++sueHOTisgZHoKaQtZxGuV2cUPQHMfjKEfg/g6oy7Hm6SKFtA==}
@@ -2105,7 +2113,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@babel/core': 7.22.10
-      '@babel/generator': 7.22.10
+      '@babel/generator': 7.22.15
       '@babel/plugin-syntax-jsx': 7.22.5(@babel/core@7.22.10)
       '@babel/plugin-syntax-typescript': 7.22.5(@babel/core@7.22.10)
       '@babel/types': 7.22.15
