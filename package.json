@@ -1,6 +1,6 @@
 {
   "name": "ember-template-tag",
-  "version": "2.3.13",
+  "version": "2.3.14",
   "description": "",
   "main": "dist/commonjs/index.js",
   "module": "dist/esm/index.js",
