@@ -24,7 +24,6 @@ import {
     templateLiteral,
     TemplateLiteral
 } from '@babel/types';
-import type { ParserPlugin } from './babel-parser';
 import { NodePath, default as babelTraverse, visitors } from '@babel/traverse';
 import { default as generate } from '@babel/generator';
 import { getTemplateLocals } from '@glimmer/syntax';
@@ -202,7 +201,7 @@ type PreprocessOptions = {
     relativePath: string;
     explicitMode?: boolean;
     linterMode?: boolean;
-    babelPlugins?: ParserPlugin[];
+    babelPlugins?: any[];
     includeSourceMaps?: boolean | 'inline' | 'both';
     getTemplateLocals?: (html: string, options?: any) => string[]
 }
@@ -245,7 +244,7 @@ export function transform(options: PreprocessOptions) {
 
 export function doTransform(options: PreprocessOptions) {
 
-    const plugins = (['decorators', 'typescript', 'classProperties', 'classStaticBlock', 'classPrivateProperties'] as ParserPlugin[]).concat(options.babelPlugins || []);
+    const plugins = (['decorators', 'typescript', 'classProperties', 'classStaticBlock', 'classPrivateProperties'] as any[]).concat(options.babelPlugins || []);
     let ast = options.ast as any;
     if (!ast) {
         ast = parse(options.input, {
