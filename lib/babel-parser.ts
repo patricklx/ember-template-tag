@@ -2,7 +2,6 @@
 
 
 import { ParserOptions } from '@babel/parser';
-import type { ParserPlugin } from '@babel/parser';
 import { ClassBody, MemberExpression, Node, Program, } from '@babel/types';
 declare class Parser {
     input: string;
@@ -31,6 +30,5 @@ declare const mixinPlugins: Record<string, Function>;
 
 export {
     Parser,
-    ParserPlugin,
     mixinPlugins
 }
