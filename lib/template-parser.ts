@@ -7,7 +7,6 @@ import {
     templateElement,
     TemplateLiteral
 } from '@babel/types';
-import { ParserOptions } from '@babel/parser';
 import { TEMPLATE_TAG_NAME } from './util';
 
 export type EmberNode = Node & {
@@ -26,7 +25,7 @@ declare class MyParser {
         lastTokEndLoc: any;
     };
 
-    constructor(options: ParserOptions, input: string);
+    constructor(options: any, input: string);
 
     startNode(): Node;
     finishNode(node: Node, type: string): Node;
@@ -40,7 +39,7 @@ declare class MyParser {
     parseClassMember(classBody: ClassBody, member: MemberExpression, state: any): Node;
 }
 
-export default function parse(input: string, options?: Partial<ParserOptions> & { templateTag?: string }) {
+export default function parse(input: string, options?: any & { templateTag?: string }) {
     const opts = Object.assign({
         ranges: true,
         allowImportExportEverywhere: true,
@@ -53,10 +52,10 @@ export default function parse(input: string, options?: Partial<ParserOptions> & 
 }
 
 
-export function createParser(options: ParserOptions & { templateTag?: string }, input: string) {
+export function createParser(options: any & { templateTag?: string }, input: string) {
     let cls = Parser as unknown as typeof MyParser
-    options.plugins?.forEach((name) => {
-        cls = (mixinPlugins as any)[name as any]?.(cls) || cls
+    options.plugins?.forEach((name: any) => {
+        cls = (mixinPlugins as any)[name]?.(cls) || cls
     });
     cls = getParser(cls);
     return new cls(options, input);
@@ -69,7 +68,7 @@ export function getParser(superclass = Parser as unknown as typeof MyParser) {
         templateTag?: string;
         detectedTemplateNodes: EmberNode[] = [];
 
-        constructor(options: ParserOptions & { templateTag?: string }, input: string) {
+        constructor(options: any & { templateTag?: string }, input: string) {
             super(options, input);
             this.templateTag = options.templateTag
         }
