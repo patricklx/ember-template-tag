@@ -20,8 +20,8 @@ dependencies:
 
 devDependencies:
   '@babel/parser':
-    specifier: 7.22.15
-    version: 7.22.15
+    specifier: 7.23.0
+    version: 7.23.0
   '@glimmer/interfaces':
     specifier: ^0.84.3
     version: 0.84.3
