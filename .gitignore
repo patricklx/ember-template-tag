@@ -18,3 +18,4 @@
 !tests-browser/node_modules
 !scripts
 !scripts/*
+lib/babel-parser.ts
