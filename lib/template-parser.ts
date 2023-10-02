@@ -3,19 +3,28 @@ import {
     ClassBody,
     MemberExpression,
     Node,
-    Program,
+    Program, SourceLocation, Super,
     templateElement,
-    TemplateLiteral
+    TemplateLiteral, TSType
 } from '@babel/types';
 import { TEMPLATE_TAG_NAME } from './util';
 
-export type EmberNode = Node & {
+
+// extend random type, Super only has type
+export declare class EmberNode implements Super {
     tagName: string;
     contentNode: TemplateLiteral;
-    tagProperties: Record<string, string|undefined>;
+    tagProperties: Record<string, string | undefined>;
     startRange: [number, number];
     endRange: [number, number];
-};
+    // @ts-ignore
+    type: "EmberTemplate";
+    start: number;
+    end: number;
+    loc: SourceLocation;
+    range: [number, number]
+}
+
 
 declare class MyParser {
     input: string;
@@ -82,7 +91,7 @@ export function getParser(superclass = Parser as unknown as typeof MyParser) {
                 this.state.value === '<' &&
                 this.input.slice(this.state.pos).startsWith(templateTag)
             ) {
-                const node = this.startNode() as EmberNode;
+                const node = this.startNode() as unknown as EmberNode;
                 this.isInsideTemplate = true;
                 node.tagName = templateTag;
                 openTemplates += 1;
@@ -132,7 +141,7 @@ export function getParser(superclass = Parser as unknown as typeof MyParser) {
                             this.isInsideTemplate = false;
                             this.next();
                             this.detectedTemplateNodes.push(node);
-                            return this.finishNode(node, 'EmberTemplate');
+                            return this.finishNode(node as unknown as Node, 'EmberTemplate');
                         }
                     }
                     this.next();

@@ -137,6 +137,33 @@ const TemplateTransformPlugins = (babel: any, options: TransformOptions) => {
     return {
         name: 'TemplateTransform',
         visitor: {
+            enter(path: NodePath<any>) {
+                if (path.node.type !== 'EmberTemplate') return;;
+                const specifier = ensureImport(path, options);
+                if (path.parent?.type === 'ClassBody') {
+                    const templateExpr = buildTemplateCall(specifier, path, options);
+                    templateExpr.loc = path.node.loc;
+                    if (options.linterMode) {
+                        const staticCallLen = 9; // 'static{;}'.length;
+                        const content = (templateExpr as TemplateLiteral).quasis[0].value.raw;
+                        (templateExpr as TemplateLiteral).quasis[0].value.raw = content.slice(7, -2);
+                    }
+                    const staticB = staticBlock([expressionStatement(templateExpr)]);
+                    (path.node as any).replacedWith = staticB;
+                    path.replaceWith(staticB);
+                } else {
+                    const templateExpr = buildTemplateCall(specifier, path, options);
+                    templateExpr.loc = path.node.loc;
+                    if (path.parent.type === 'Program' && !options.linterMode) {
+                        const exportDefault = exportDefaultDeclaration(templateExpr);
+                        (path.node as any).replacedWith = exportDefault;
+                        path.replaceWith(exportDefault)
+                        return
+                    }
+                    (path.node as any).replacedWith = templateExpr;
+                    path.replaceWith(templateExpr);
+                }
+            },
             Program: {
                 enter(path: NodePath<Program>) {
                     path.state = {};
@@ -163,32 +190,6 @@ const TemplateTransformPlugins = (babel: any, options: TransformOptions) => {
             Identifier(path: NodePath<Identifier>) {
                 if (path.state.calls.some((c: Identifier) => c === path.node)) return;
                 path.state.identifiers.add(path.node.name);
-            },
-            EmberTemplate(path: NodePath<EmberNode>) {
-                const specifier = ensureImport(path, options);
-                if (path.parent?.type === 'ClassBody') {
-                    const templateExpr = buildTemplateCall(specifier, path, options);
-                    templateExpr.loc = path.node.loc;
-                    if (options.linterMode) {
-                        const staticCallLen = 9; // 'static{;}'.length;
-                        const content = (templateExpr as TemplateLiteral).quasis[0].value.raw;
-                        (templateExpr as TemplateLiteral).quasis[0].value.raw = content.slice(7, -2);
-                    }
-                    const staticB = staticBlock([expressionStatement(templateExpr)]);
-                    (path.node as any).replacedWith = staticB;
-                    path.replaceWith(staticB);
-                } else {
-                    const templateExpr = buildTemplateCall(specifier, path, options);
-                    templateExpr.loc = path.node.loc;
-                    if (path.parent.type === 'Program' && !options.linterMode) {
-                        const exportDefault = exportDefaultDeclaration(templateExpr);
-                        (path.node as any).replacedWith = exportDefault;
-                        path.replaceWith(exportDefault)
-                        return
-                    }
-                    (path.node as any).replacedWith = templateExpr;
-                    path.replaceWith(templateExpr);
-                }
             }
         }
     }

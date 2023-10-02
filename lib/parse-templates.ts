@@ -2,9 +2,6 @@ import traverse, { NodePath } from '@babel/traverse';
 import { TEMPLATE_TAG_NAME, } from './util';
 import parse, { EmberNode } from './template-parser';
 import { Node } from '@babel/types';
-import { TYPES } from '@babel/types';
-
-TYPES.push('EmberTemplate');
 
 export type TemplateMatch = TemplateTagMatch | TemplateLiteralMatch;
 
@@ -110,21 +107,22 @@ export function parseTemplatesFromAst(
 
   traverse(ast, {
     // @ts-ignore
-    EmberTemplate(path: NodePath<EmberNode>) {
-      const node = path.node;
-
-      results.push({
-        type: 'template-tag',
-        tagName: node.tagName,
-        contents: node.contentNode.quasis[0].value.raw,
-        contentRange: node.contentNode.range as [number, number],
-        range: node.range!!,
-        startRange: {
-          start: node.startRange[0],
-          end: node.startRange[1],
-        },
-        endRange: { start: node.endRange[0], end: node.endRange[1] },
-      });
+    enter(path: NodePath<any>) {
+      const node = path.node as EmberNode;
+      if (node.type === 'EmberTemplate') {
+        results.push({
+          type: 'template-tag',
+          tagName: node.tagName,
+          contents: node.contentNode.quasis[0].value.raw,
+          contentRange: node.contentNode.range as [number, number],
+          range: node.range!!,
+          startRange: {
+            start: node.startRange[0],
+            end: node.startRange[1],
+          },
+          endRange: { start: node.endRange[0], end: node.endRange[1] },
+        });
+      }
     }
   });
   return results;
