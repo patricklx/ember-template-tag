@@ -32,9 +32,10 @@ jobs:
       with:
           version: latest
     - run: pnpm i
-    - run: pnpm uninstall @babel/parser
+    - run: mv ./node_modules/@babel/parser node_modules_babel_parser
     - run: pnpm run build
     - run: pnpm test && pnpm tsc --build --clean
+    - run: mv node_modules_babel_parser ./node_modules/@babel/parser
     - run: pnpm view "ember-template-tag@$(cat package.json | jq -r '.version')" || npm publish
       if: github.ref == 'refs/heads/main'
     
