@@ -45,7 +45,7 @@ devDependencies:
     version: 29.5.5
   '@types/line-column':
     specifier: ^1.0.0
-    version: 1.0.0
+    version: 1.0.1
   '@types/node':
     specifier: ^20.4.2
     version: 20.8.4
@@ -820,8 +820,8 @@ packages:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
     dev: true
 
-  /@types/line-column@1.0.0:
-    resolution: {integrity: sha512-wbw+IDRw/xY/RGy+BL6f4Eey4jsUgHQrMuA4Qj0CSG3x/7C2Oc57pmRoM2z3M4DkylWRz+G1pfX06sCXQm0J+w==}
+  /@types/line-column@1.0.1:
+    resolution: {integrity: sha512-5zRoSbsEZ3iE5tXq4518i+Ji+gBKAA3aHxrbPhN5bXlpS6KdoCoWVqfRh7xPdrblaL6Nzw0ZvhfgHN7oDQv4kQ==}
     dev: true
 
   /@types/node@20.8.4:
