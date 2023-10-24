@@ -29,8 +29,8 @@ devDependencies:
     specifier: ^0.84.3
     version: 0.84.3
   '@glimmer/validator':
-    specifier: ^0.84.3
-    version: 0.84.3
+    specifier: ^0.85.2
+    version: 0.85.2
   '@types/babel__generator':
     specifier: ^7.6.4
     version: 7.6.6
@@ -406,10 +406,20 @@ packages:
       '@glimmer/env': 0.1.7
     dev: true
 
+  /@glimmer/global-context@0.85.2:
+    resolution: {integrity: sha512-IMMYoIef9MljDs1BwjLdbI84+7cbZtROm4KYYuFdsqPfED6gZRbLpV3UV6TmQlgVyq6YKWbDzIJh4SgFdQpI0w==}
+    dev: true
+
   /@glimmer/interfaces@0.84.3:
     resolution: {integrity: sha512-dk32ykoNojt0mvEaIW6Vli5MGTbQo58uy3Epj7ahCgTHmWOKuw/0G83f2UmFprRwFx689YTXG38I/vbpltEjzg==}
     dependencies:
       '@simple-dom/interface': 1.4.0
+
+  /@glimmer/interfaces@0.85.2:
+    resolution: {integrity: sha512-7N3BatwKTzR3LZ+F+ADEzaqNK0DfKgToHVKFy1cpYoYJHd7iGAT3V0k35Zkg8OlMTvk1xgR3parhMaAlKkg5BA==}
+    dependencies:
+      '@simple-dom/interface': 1.4.0
+    dev: true
 
   /@glimmer/reference@0.84.3:
     resolution: {integrity: sha512-lV+p/aWPVC8vUjmlvYVU7WQJsLh319SdXuAWoX/SE3pq340BJlAJiEcAc6q52y9JNhT57gMwtjMX96W5Xcx/qw==}
@@ -437,11 +447,27 @@ packages:
       '@glimmer/interfaces': 0.84.3
       '@simple-dom/interface': 1.4.0
 
+  /@glimmer/util@0.85.2:
+    resolution: {integrity: sha512-3RTVhVeGV/ZsMkOW6tmWscwQpjzliZEkWef76mpzRJqAiFC7nulS0T3VbsYrThAfVHPadw56Tww7AMuKUYVHYg==}
+    dependencies:
+      '@glimmer/env': 0.1.7
+      '@glimmer/interfaces': 0.85.2
+    dev: true
+
   /@glimmer/validator@0.84.3:
     resolution: {integrity: sha512-RTBV4TokUB0vI31UC7ikpV7lOYpWUlyqaKV//pRC4pexYMlmqnVhkFrdiimB/R1XyNdUOQUmnIAcdic39NkbhQ==}
     dependencies:
       '@glimmer/env': 0.1.7
       '@glimmer/global-context': 0.84.3
+    dev: true
+
+  /@glimmer/validator@0.85.2:
+    resolution: {integrity: sha512-i6rV6LLonr+xMezXiEGiqsQJNd3mKosnkPN1PVbpZX+FfvW2454XqWXBZOGGOf7HgxAcKMXPR9bM5VHpcS1qqw==}
+    dependencies:
+      '@glimmer/env': 0.1.7
+      '@glimmer/global-context': 0.85.2
+      '@glimmer/interfaces': 0.85.2
+      '@glimmer/util': 0.85.2
     dev: true
 
   /@handlebars/parser@2.0.0:
