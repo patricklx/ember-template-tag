@@ -23,8 +23,8 @@ devDependencies:
     specifier: 7.23.0
     version: 7.23.0
   '@glimmer/interfaces':
-    specifier: ^0.87.1
-    version: 0.87.1
+    specifier: ^0.88.1
+    version: 0.88.1
   '@glimmer/reference':
     specifier: ^0.88.1
     version: 0.88.1
