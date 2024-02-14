@@ -36,7 +36,7 @@ devDependencies:
     version: 7.6.6
   '@types/babel__standalone':
     specifier: ^7.1.4
-    version: 7.1.6
+    version: 7.1.7
   '@types/babel__traverse':
     specifier: ^7.20.1
     version: 7.20.3
@@ -781,8 +781,8 @@ packages:
       '@babel/types': 7.23.0
     dev: true
 
-  /@types/babel__standalone@7.1.6:
-    resolution: {integrity: sha512-JRVq2H02irW6GDxkHepsdZVjor87SZo4eDsxoBtSbswf7HWtVYNxCmJDBkJbFNFWGOuzsxATZV8xZ2PI9sBiIw==}
+  /@types/babel__standalone@7.1.7:
+    resolution: {integrity: sha512-4RUJX9nWrP/emaZDzxo/+RYW8zzLJTXWJyp2k78HufG459HCz754hhmSymt3VFOU6/Wy+IZqfPvToHfLuGOr7w==}
     dependencies:
       '@types/babel__core': 7.20.1
     dev: true
