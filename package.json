@@ -38,7 +38,7 @@
     "@types/babel__generator": "^7.6.8",
     "@types/babel__standalone": "^7.1.4",
     "@types/babel__traverse": "^7.20.5",
-    "@types/jest": "^29.5.3",
+    "@types/jest": "^29.5.12",
     "@types/line-column": "^1.0.2",
     "@types/node": "^20.4.2",
     "@vitest/utils": "^1.2.2",
