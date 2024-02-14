@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@babel/parser": "7.23.0",
-    "@glimmer/interfaces": "^0.87.1",
+    "@glimmer/interfaces": "^0.88.1",
     "@glimmer/reference": "^0.88.1",
     "@glimmer/validator": "^0.87.1",
     "@types/babel__generator": "^7.6.4",
