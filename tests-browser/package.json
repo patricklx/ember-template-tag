@@ -6,6 +6,6 @@
     "playwright": "^1.37.1"
   },
   "dependencies": {
-    "vite": "^4.4.9"
+    "vite": "^4.5.2"
   }
 }
