@@ -44,8 +44,8 @@ devDependencies:
     specifier: ^29.5.3
     version: 29.5.6
   '@types/line-column':
-    specifier: ^1.0.0
-    version: 1.0.1
+    specifier: ^1.0.2
+    version: 1.0.2
   '@types/node':
     specifier: ^20.4.2
     version: 20.11.17
@@ -871,8 +871,8 @@ packages:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
     dev: true
 
-  /@types/line-column@1.0.1:
-    resolution: {integrity: sha512-5zRoSbsEZ3iE5tXq4518i+Ji+gBKAA3aHxrbPhN5bXlpS6KdoCoWVqfRh7xPdrblaL6Nzw0ZvhfgHN7oDQv4kQ==}
+  /@types/line-column@1.0.2:
+    resolution: {integrity: sha512-099oFQmp/Tlf20xW5XI5R4F69N6lF/zQ09XDzc3R5BOLFlqIotgKoNIyj0HD4fQLWcGDreDJv8k/BkLJscrDrw==}
     dev: true
 
   /@types/node@20.11.17:
