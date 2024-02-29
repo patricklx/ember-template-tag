@@ -31,7 +31,7 @@
     "@glimmer/syntax": "^0.88.1"
   },
   "devDependencies": {
-    "@babel/parser": "7.23.9",
+    "@babel/parser": "7.24.0",
     "@glimmer/interfaces": "^0.88.1",
     "@glimmer/reference": "^0.88.1",
     "@glimmer/validator": "^0.88.1",
