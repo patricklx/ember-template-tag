@@ -26,8 +26,8 @@ devDependencies:
     specifier: ^0.88.1
     version: 0.88.1
   '@glimmer/reference':
-    specifier: ^0.88.1
-    version: 0.88.1
+    specifier: ^0.89.0
+    version: 0.89.0
   '@glimmer/validator':
     specifier: ^0.88.1
     version: 0.88.1
@@ -431,19 +431,29 @@ packages:
     resolution: {integrity: sha512-665T0Y+b69IGcEgl8w667kn/zRHMjWTN1O0FyzPDgcpc14kxvNqrOgGjqbs8HPnUuPVQzURF8jYGiH5sWM26/Q==}
     dev: true
 
+  /@glimmer/global-context@0.89.0:
+    resolution: {integrity: sha512-LEHUgjdcr915wV2vMHR/dLQNzFvrFCGJlQROvOxX0Q/O8PMceXLR6BPe5DsAWnr6s6Be8CQm3DEgtKi5PY1Lcg==}
+    dev: true
+
   /@glimmer/interfaces@0.88.1:
     resolution: {integrity: sha512-BOcN8xFNX/eppGxwS9Rm1+PlQaFX+tK91cuQLHj2sRwB+qVbL/WeutIa3AUQYr0VVEzMm2S6bYCLvG6p0a8v9A==}
     dependencies:
       '@simple-dom/interface': 1.4.0
 
-  /@glimmer/reference@0.88.1:
-    resolution: {integrity: sha512-1AenHdjFTsaExBddetd7HE7M3okR8x51WyS9ssSp0RNysn0myL3+uCm0vPqdmM7Ncyqfa1brhiqEktp9ZP/Oaw==}
+  /@glimmer/interfaces@0.89.0:
+    resolution: {integrity: sha512-D3Y4QaYlldvukP8Xrue7CNNSYShMvIL6/8lIohLWYZ14eN17+WfhxA/yF9+jRGCUCoyobqhMvft+LlDhqH+NBw==}
+    dependencies:
+      '@simple-dom/interface': 1.4.0
+    dev: true
+
+  /@glimmer/reference@0.89.0:
+    resolution: {integrity: sha512-hEUt5R3RfU8psc0wywfJFGrI9hDNFQ1KCBgqphiZXfUZfJhn9QtoNvRxs+s7pSeiqCei4b3aFD0be9lwXa+GHg==}
     dependencies:
       '@glimmer/env': 0.1.7
-      '@glimmer/global-context': 0.88.1
-      '@glimmer/interfaces': 0.88.1
-      '@glimmer/util': 0.88.1
-      '@glimmer/validator': 0.88.1
+      '@glimmer/global-context': 0.89.0
+      '@glimmer/interfaces': 0.89.0
+      '@glimmer/util': 0.89.0
+      '@glimmer/validator': 0.89.0
     dev: true
 
   /@glimmer/syntax@0.88.1:
@@ -462,6 +472,13 @@ packages:
       '@glimmer/env': 0.1.7
       '@glimmer/interfaces': 0.88.1
 
+  /@glimmer/util@0.89.0:
+    resolution: {integrity: sha512-hxdObRAqd4LGfoNLkXxsRbaQJuTs7+HbL5hwPkH48xGNBlFAUH8bjUCiFsVhfOwZ8r2WHThj05EgGUAOkuVkAw==}
+    dependencies:
+      '@glimmer/env': 0.1.7
+      '@glimmer/interfaces': 0.89.0
+    dev: true
+
   /@glimmer/validator@0.88.1:
     resolution: {integrity: sha512-E9vY4o80hJbSUussrKTmSGG7Ov8ofYxzSLOYkqqvT4MQt493qd9iS5uQDwTgDzxJrnH4jLuhFPMG+M/DiodIQQ==}
     dependencies:
@@ -469,6 +486,15 @@ packages:
       '@glimmer/global-context': 0.88.1
       '@glimmer/interfaces': 0.88.1
       '@glimmer/util': 0.88.1
+    dev: true
+
+  /@glimmer/validator@0.89.0:
+    resolution: {integrity: sha512-yTUp7k5iaWaUcpINri9bTlXP83n85JF+Z5yzsC1KE6F0KJQh8VN7NlUNMx09fM0EAA/SqaKH3xqEfD7AEFB3Lg==}
+    dependencies:
+      '@glimmer/env': 0.1.7
+      '@glimmer/global-context': 0.89.0
+      '@glimmer/interfaces': 0.89.0
+      '@glimmer/util': 0.89.0
     dev: true
 
   /@glimmer/wire-format@0.88.1:
@@ -854,12 +880,6 @@ packages:
 
   /@types/line-column@1.0.2:
     resolution: {integrity: sha512-099oFQmp/Tlf20xW5XI5R4F69N6lF/zQ09XDzc3R5BOLFlqIotgKoNIyj0HD4fQLWcGDreDJv8k/BkLJscrDrw==}
-    dev: true
-
-  /@types/node@20.11.20:
-    resolution: {integrity: sha512-7/rR21OS+fq8IyHTgtLkDK949uzsa6n8BkziAKtPVpugIkO6D+/ooXMvzXxDnZrmtXVfjb1bKQafYpb8s89LOg==}
-    dependencies:
-      undici-types: 5.26.5
     dev: true
 
   /@types/node@20.11.22:
@@ -2228,7 +2248,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.11.20
+      '@types/node': 20.11.22
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
