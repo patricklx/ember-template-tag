@@ -29,8 +29,8 @@ devDependencies:
     specifier: ^0.89.0
     version: 0.89.0
   '@glimmer/validator':
-    specifier: ^0.88.1
-    version: 0.88.1
+    specifier: ^0.89.0
+    version: 0.89.0
   '@types/babel__generator':
     specifier: ^7.6.8
     version: 7.6.8
@@ -427,10 +427,6 @@ packages:
   /@glimmer/env@0.1.7:
     resolution: {integrity: sha512-JKF/a9I9jw6fGoz8kA7LEQslrwJ5jms5CXhu/aqkBWk+PmZ6pTl8mlb/eJ/5ujBGTiQzBhy5AIWF712iA+4/mw==}
 
-  /@glimmer/global-context@0.88.1:
-    resolution: {integrity: sha512-665T0Y+b69IGcEgl8w667kn/zRHMjWTN1O0FyzPDgcpc14kxvNqrOgGjqbs8HPnUuPVQzURF8jYGiH5sWM26/Q==}
-    dev: true
-
   /@glimmer/global-context@0.89.0:
     resolution: {integrity: sha512-LEHUgjdcr915wV2vMHR/dLQNzFvrFCGJlQROvOxX0Q/O8PMceXLR6BPe5DsAWnr6s6Be8CQm3DEgtKi5PY1Lcg==}
     dev: true
@@ -471,21 +467,13 @@ packages:
     dependencies:
       '@glimmer/env': 0.1.7
       '@glimmer/interfaces': 0.88.1
+    dev: false
 
   /@glimmer/util@0.89.0:
     resolution: {integrity: sha512-hxdObRAqd4LGfoNLkXxsRbaQJuTs7+HbL5hwPkH48xGNBlFAUH8bjUCiFsVhfOwZ8r2WHThj05EgGUAOkuVkAw==}
     dependencies:
       '@glimmer/env': 0.1.7
       '@glimmer/interfaces': 0.89.0
-    dev: true
-
-  /@glimmer/validator@0.88.1:
-    resolution: {integrity: sha512-E9vY4o80hJbSUussrKTmSGG7Ov8ofYxzSLOYkqqvT4MQt493qd9iS5uQDwTgDzxJrnH4jLuhFPMG+M/DiodIQQ==}
-    dependencies:
-      '@glimmer/env': 0.1.7
-      '@glimmer/global-context': 0.88.1
-      '@glimmer/interfaces': 0.88.1
-      '@glimmer/util': 0.88.1
     dev: true
 
   /@glimmer/validator@0.89.0:
