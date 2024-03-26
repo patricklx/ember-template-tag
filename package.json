@@ -28,7 +28,7 @@
     "@babel/generator": "7.23.6",
     "@babel/traverse": "7.24.0",
     "@babel/types": "7.23.0",
-    "@glimmer/syntax": "^0.88.1"
+    "@glimmer/syntax": "^0.91.0"
   },
   "devDependencies": {
     "@babel/parser": "7.24.0",
