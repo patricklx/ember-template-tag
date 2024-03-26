@@ -23,8 +23,8 @@ devDependencies:
     specifier: 7.24.0
     version: 7.24.0
   '@glimmer/interfaces':
-    specifier: ^0.88.1
-    version: 0.88.1
+    specifier: ^0.91.0
+    version: 0.91.0
   '@glimmer/reference':
     specifier: ^0.89.0
     version: 0.89.0
@@ -442,6 +442,12 @@ packages:
 
   /@glimmer/interfaces@0.89.0:
     resolution: {integrity: sha512-D3Y4QaYlldvukP8Xrue7CNNSYShMvIL6/8lIohLWYZ14eN17+WfhxA/yF9+jRGCUCoyobqhMvft+LlDhqH+NBw==}
+    dependencies:
+      '@simple-dom/interface': 1.4.0
+    dev: true
+
+  /@glimmer/interfaces@0.91.0:
+    resolution: {integrity: sha512-458jAHLrZg/taMZ9YIvl73uOSV/DiSV/YkpU1LbrKQu4N/I94KwWt6LKh/DJcNoOkvCcp/OnA6vCojU//m9oPg==}
     dependencies:
       '@simple-dom/interface': 1.4.0
     dev: true
