@@ -12,8 +12,8 @@ dependencies:
     specifier: 7.24.0
     version: 7.24.0
   '@babel/types':
-    specifier: 7.23.0
-    version: 7.23.0
+    specifier: 7.24.0
+    version: 7.24.0
   '@glimmer/syntax':
     specifier: ^0.91.1
     version: 0.91.1
