@@ -29,8 +29,8 @@ devDependencies:
     specifier: ^0.89.0
     version: 0.89.0
   '@glimmer/validator':
-    specifier: ^0.88.1
-    version: 0.88.1
+    specifier: ^0.91.1
+    version: 0.91.1
   '@types/babel__generator':
     specifier: ^7.6.8
     version: 7.6.8
@@ -412,12 +412,12 @@ packages:
   /@glimmer/env@0.1.7:
     resolution: {integrity: sha512-JKF/a9I9jw6fGoz8kA7LEQslrwJ5jms5CXhu/aqkBWk+PmZ6pTl8mlb/eJ/5ujBGTiQzBhy5AIWF712iA+4/mw==}
 
-  /@glimmer/global-context@0.88.1:
-    resolution: {integrity: sha512-665T0Y+b69IGcEgl8w667kn/zRHMjWTN1O0FyzPDgcpc14kxvNqrOgGjqbs8HPnUuPVQzURF8jYGiH5sWM26/Q==}
-    dev: true
-
   /@glimmer/global-context@0.89.0:
     resolution: {integrity: sha512-LEHUgjdcr915wV2vMHR/dLQNzFvrFCGJlQROvOxX0Q/O8PMceXLR6BPe5DsAWnr6s6Be8CQm3DEgtKi5PY1Lcg==}
+    dev: true
+
+  /@glimmer/global-context@0.91.1:
+    resolution: {integrity: sha512-iSTUasIo00zeHQ2467eja98EzQxTPIQzkoRB4Cb258HSnwfuzxrfUUGIdz5dlXIx7dYN9RaY5QstSZ+b4GtV9w==}
     dev: true
 
   /@glimmer/interfaces@0.88.1:
@@ -436,7 +436,6 @@ packages:
     resolution: {integrity: sha512-yUCpAC28UZUxzr5WK8bfx9z4MbSpOV6pAJ/XmJibzx4+un9Is+5ZvZ0t3QHMHs2Qi9N606412qLjLJ/HLgsd4w==}
     dependencies:
       '@simple-dom/interface': 1.4.0
-    dev: false
 
   /@glimmer/reference@0.89.0:
     resolution: {integrity: sha512-hEUt5R3RfU8psc0wywfJFGrI9hDNFQ1KCBgqphiZXfUZfJhn9QtoNvRxs+s7pSeiqCei4b3aFD0be9lwXa+GHg==}
@@ -458,13 +457,6 @@ packages:
       simple-html-tokenizer: 0.5.11
     dev: false
 
-  /@glimmer/util@0.88.1:
-    resolution: {integrity: sha512-PV/24+vBmsReR78UQXJlEHDblU6QBAeIJa8MwKhQoxSD6WgvQHP4KmX23rvlCz11GxApTwyPm/2qyp/SwVvX2A==}
-    dependencies:
-      '@glimmer/env': 0.1.7
-      '@glimmer/interfaces': 0.88.1
-    dev: true
-
   /@glimmer/util@0.89.0:
     resolution: {integrity: sha512-hxdObRAqd4LGfoNLkXxsRbaQJuTs7+HbL5hwPkH48xGNBlFAUH8bjUCiFsVhfOwZ8r2WHThj05EgGUAOkuVkAw==}
     dependencies:
@@ -477,16 +469,6 @@ packages:
     dependencies:
       '@glimmer/env': 0.1.7
       '@glimmer/interfaces': 0.91.1
-    dev: false
-
-  /@glimmer/validator@0.88.1:
-    resolution: {integrity: sha512-E9vY4o80hJbSUussrKTmSGG7Ov8ofYxzSLOYkqqvT4MQt493qd9iS5uQDwTgDzxJrnH4jLuhFPMG+M/DiodIQQ==}
-    dependencies:
-      '@glimmer/env': 0.1.7
-      '@glimmer/global-context': 0.88.1
-      '@glimmer/interfaces': 0.88.1
-      '@glimmer/util': 0.88.1
-    dev: true
 
   /@glimmer/validator@0.89.0:
     resolution: {integrity: sha512-yTUp7k5iaWaUcpINri9bTlXP83n85JF+Z5yzsC1KE6F0KJQh8VN7NlUNMx09fM0EAA/SqaKH3xqEfD7AEFB3Lg==}
@@ -495,6 +477,15 @@ packages:
       '@glimmer/global-context': 0.89.0
       '@glimmer/interfaces': 0.89.0
       '@glimmer/util': 0.89.0
+    dev: true
+
+  /@glimmer/validator@0.91.1:
+    resolution: {integrity: sha512-RH9RTiOixw+IpBZybBlomoJnMtMWDIcJh1ae0qT1BguVBnPywTvsSw5b1MBLWOyhM2NfAfAeucG16bswXkDCCA==}
+    dependencies:
+      '@glimmer/env': 0.1.7
+      '@glimmer/global-context': 0.91.1
+      '@glimmer/interfaces': 0.91.1
+      '@glimmer/util': 0.91.1
     dev: true
 
   /@glimmer/wire-format@0.91.1:
@@ -771,8 +762,8 @@ packages:
   /@jridgewell/source-map@0.3.5:
     resolution: {integrity: sha512-UTYAUj/wviwdsMfzoSJspJxbkH5o1snzwX0//0ENX1u/55kkZZkcTZP6u9bwKGkv+dkk9at4m1Cpt0uY80kcpQ==}
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.3
-      '@jridgewell/trace-mapping': 0.3.18
+      '@jridgewell/gen-mapping': 0.3.5
+      '@jridgewell/trace-mapping': 0.3.25
     dev: true
 
   /@jridgewell/sourcemap-codec@1.4.14:
@@ -902,12 +893,6 @@ packages:
 
   /@types/line-column@1.0.2:
     resolution: {integrity: sha512-099oFQmp/Tlf20xW5XI5R4F69N6lF/zQ09XDzc3R5BOLFlqIotgKoNIyj0HD4fQLWcGDreDJv8k/BkLJscrDrw==}
-    dev: true
-
-  /@types/node@20.11.22:
-    resolution: {integrity: sha512-/G+IxWxma6V3E+pqK1tSl2Fo1kl41pK1yeCyDsgkF9WlVAme4j5ISYM2zR11bgLFJGLN5sVK40T4RJNuiZbEjA==}
-    dependencies:
-      undici-types: 5.26.5
     dev: true
 
   /@types/node@20.11.30:
@@ -2276,7 +2261,7 @@ packages:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
     engines: {node: '>= 10.13.0'}
     dependencies:
-      '@types/node': 20.11.22
+      '@types/node': 20.11.30
       merge-stream: 2.0.0
       supports-color: 8.1.1
     dev: true
@@ -2834,7 +2819,7 @@ packages:
       uglify-js:
         optional: true
     dependencies:
-      '@jridgewell/trace-mapping': 0.3.18
+      '@jridgewell/trace-mapping': 0.3.25
       jest-worker: 27.5.1
       schema-utils: 3.3.0
       serialize-javascript: 6.0.1
