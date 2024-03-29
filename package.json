@@ -25,7 +25,7 @@
     "url": "https://github.com/patricklx/ember-template-tag"
   },
   "dependencies": {
-    "@babel/generator": "7.23.6",
+    "@babel/generator": "7.24.1",
     "@babel/traverse": "7.24.0",
     "@babel/types": "7.23.0",
     "@glimmer/syntax": "^0.91.1"
