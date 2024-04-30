@@ -27,7 +27,7 @@
   "dependencies": {
     "@babel/generator": "7.24.1",
     "@babel/traverse": "7.24.0",
-    "@babel/types": "7.23.0",
+    "@babel/types": "7.24.5",
     "@glimmer/syntax": "^0.91.1"
   },
   "devDependencies": {
