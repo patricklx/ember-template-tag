@@ -26,7 +26,7 @@
   },
   "dependencies": {
     "@babel/generator": "7.24.1",
-    "@babel/traverse": "7.24.0",
+    "@babel/traverse": "7.24.6",
     "@babel/types": "7.23.0",
     "@glimmer/syntax": "^0.91.1"
   },
@@ -37,7 +37,7 @@
     "@glimmer/validator": "^0.91.1",
     "@types/babel__generator": "^7.6.8",
     "@types/babel__standalone": "^7.1.4",
-    "@types/babel__traverse": "^7.20.5",
+    "@types/babel__traverse": "^7.20.6",
     "@types/jest": "^29.5.12",
     "@types/line-column": "^1.0.2",
     "@types/node": "^20.11.30",
