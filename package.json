@@ -40,7 +40,7 @@
     "@types/babel__traverse": "^7.20.5",
     "@types/jest": "^29.5.12",
     "@types/line-column": "^1.0.2",
-    "@types/node": "^20.11.30",
+    "@types/node": "^20.14.1",
     "@vitest/utils": "^1.4.0",
     "assert": "^2.0.0",
     "buffer": "^6.0.3",
